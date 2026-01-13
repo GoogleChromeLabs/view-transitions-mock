@@ -1,0 +1,54 @@
+{
+    "name": "view-transitions-mock",
+    "version": "0.0.1",
+    "description": "Mock support for Same-Document View Transitions",
+    "type": "module",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "clean": "rm -rf ./dist",
+        "lint": "prettier --check '{src,test,demo}/**/*.{ts,tsx,js,jsx}'",
+        "format": "prettier --write '{src,test,demo}/**/*.{ts,tsx,js,jsx}'",
+        "prebuild": "npm run clean",
+        "build": "esbuild src/index.ts --sourcemap --bundle --outfile=dist/index.js --platform=browser --format=esm && tsc --declaration --emitDeclarationOnly --outFile dist/index.d.ts",
+        "start": "concurrently --kill-others 'npm run watch' 'npm run serve'",
+        "watch": "esbuild src/index.ts --sourcemap --bundle --outfile=demo/view-transitions-mock.js --platform=browser --format=esm --watch",
+        "serve": "esbuild --servedir=demo",
+        "dev": "npm run start",
+        "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
+        "prepublish": "npm run build",
+        "pretest": "npm run build",
+        "test": "echo \"No tests specified\"",
+        "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
+        "require-license-headers": "addlicense -check -f=./LICENSE src",
+        "require-pristine-tree": "exit $(git status --porcelain | wc -l)",
+        "add-license-headers": "addlicense -c 'Google LLC' -l apache -s=only -f=./LICENSE ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GoogleChromeLabs/view-transitions-mock.git"
+    },
+    "keywords": [
+        "css",
+        "view-transitions"
+    ],
+    "author": {
+        "name": "Bramus",
+        "email": "bramus@bram.us",
+        "url": "https://www.bram.us/"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/GoogleChromeLabs/view-transitions-mock/issues"
+    },
+    "homepage": "https://github.com/GoogleChromeLabs/view-transitions-mock#readme",
+    "devDependencies": {
+        "concurrently": "^9.2.1",
+        "esbuild": "^0.27.2",
+        "prettier": "^3.4.1",
+        "typescript": "^5.7.2"
+    }
+}
