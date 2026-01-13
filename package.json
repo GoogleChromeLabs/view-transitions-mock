@@ -20,6 +20,7 @@
         "dev": "npm run start",
         "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "prepublish": "npm run build",
+        "type-check": "tsc --noEmit",
         "test": "vitest --environment jsdom",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
