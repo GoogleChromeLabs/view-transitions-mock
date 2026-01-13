@@ -1,3 +1,8 @@
+/**
+ * Copyright 2026 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { startViewTransition, getActiveViewTranstion } from "./same-document";
 
 import { ViewTransition } from "./classes/ViewTransition";
