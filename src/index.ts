@@ -9,17 +9,13 @@ const register = (force: boolean = false): void => {
   if (registered) return;
 
   if (!document.startViewTransition || force) {
-    if (!window.ViewTransition) {
-      Reflect.defineProperty(window, "ViewTransition", {
-        value: ViewTransition,
-      });
-    }
+    Reflect.defineProperty(window, "ViewTransition", {
+      value: ViewTransition,
+    });
 
-    if (!window.ViewTransitionTypeSet) {
-      Reflect.defineProperty(window, "ViewTransitionTypeSet", {
-        value: ViewTransitionTypeSet,
-      });
-    }
+    Reflect.defineProperty(window, "ViewTransitionTypeSet", {
+      value: ViewTransitionTypeSet,
+    });
 
     Reflect.defineProperty(document, "activeViewTransition", {
       get: getActiveViewTranstion,
