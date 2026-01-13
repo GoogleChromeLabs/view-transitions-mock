@@ -3,7 +3,11 @@ import { startViewTransition } from "./same-document";
 import { ViewTransition } from "./classes/ViewTransition";
 import { ViewTransitionTypeSet } from "./classes/ViewTransitionTypeSet";
 
+let registered = false;
+
 const register = (force: boolean = false): void => {
+  if (registered) return;
+
   if (!document.startViewTransition || force) {
     if (!window.ViewTransition) {
       Reflect.defineProperty(window, "ViewTransition", {
@@ -18,6 +22,10 @@ const register = (force: boolean = false): void => {
     }
 
     document.startViewTransition = startViewTransition;
+
+    registered = true;
+
+    console.info("Support for Same-Document View Transitions is now mocked");
   }
 };
 
