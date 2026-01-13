@@ -1,4 +1,4 @@
-import { startViewTransition } from "./same-document";
+import { startViewTransition, getActiveViewTranstion } from "./same-document";
 
 import { ViewTransition } from "./classes/ViewTransition";
 import { ViewTransitionTypeSet } from "./classes/ViewTransitionTypeSet";
@@ -21,8 +21,12 @@ const register = (force: boolean = false): void => {
       });
     }
 
-    document.startViewTransition = startViewTransition;
+    Reflect.defineProperty(document, "activeViewTransition", {
+      get: getActiveViewTranstion,
+    });
 
+    document.startViewTransition = startViewTransition;
+    
     registered = true;
 
     console.info("Support for Same-Document View Transitions is now mocked");

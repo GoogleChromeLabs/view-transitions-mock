@@ -4,6 +4,8 @@ import {
 } from "./types";
 import { ViewTransition } from "./classes/ViewTransition";
 
+let activeViewTransition: ViewTransition | null = null;
+
 const startViewTransition = (
   params?: ViewTransitionUpdateCallback | StartViewTransitionOptions,
 ): ViewTransition => {
@@ -24,20 +26,27 @@ const startViewTransition = (
   }
 
   // If there already is a ViewTransition active, skip that first
-  if (document.activeViewTransition) {
-    document.activeViewTransition.skipTransition();
-    document.activeViewTransition = null;
+  if (activeViewTransition) {
+    activeViewTransition.skipTransition();
+    activeViewTransition = null;
   }
 
   // Create the (Mocked) View Transition
   const transition = new ViewTransition(callback);
   types.forEach((t) => transition.types.add(t));
 
-  // Store it as the document.activeViewTransition
-  document.activeViewTransition = transition;
+  // Store it as the activeViewTransition
+  activeViewTransition = transition;
+  transition.finished.then(() => {
+    activeViewTransition = null;
+  });
 
   // Return it
   return transition;
 };
 
-export { startViewTransition };
+const getActiveViewTranstion = (): ViewTransition | null => {
+  return activeViewTransition;
+};
+
+export { startViewTransition, getActiveViewTranstion };
