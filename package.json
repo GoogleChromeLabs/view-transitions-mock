@@ -10,8 +10,8 @@
     ],
     "scripts": {
         "clean": "rm -rf ./dist",
-        "lint": "prettier --check '{src,test,demo}/**/*.{ts,tsx,js,jsx}'",
-        "format": "prettier --write '{src,test,demo}/**/*.{ts,tsx,js,jsx}'",
+        "lint": "prettier --check '{src,tests,demo}/**/*.{ts,tsx,js,jsx}'",
+        "format": "prettier --write '{src,tests,demo}/**/*.{ts,tsx,js,jsx}'",
         "prebuild": "npm run clean",
         "build": "esbuild src/index.ts --sourcemap --bundle --outfile=dist/index.js --platform=browser --format=esm && tsc --declaration --emitDeclarationOnly --outFile dist/index.d.ts",
         "start": "concurrently --kill-others 'npm run watch' 'npm run serve'",
@@ -20,8 +20,7 @@
         "dev": "npm run start",
         "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "prepublish": "npm run build",
-        "pretest": "npm run build",
-        "test": "echo \"No tests specified\"",
+        "test": "vitest --environment jsdom",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
         "require-pristine-tree": "exit $(git status --porcelain | wc -l)",
@@ -48,7 +47,9 @@
     "devDependencies": {
         "concurrently": "^9.2.1",
         "esbuild": "^0.27.2",
+        "jsdom": "^27.4.0",
         "prettier": "^3.4.1",
-        "typescript": "^5.7.2"
+        "typescript": "^5.7.2",
+        "vitest": "^4.0.17"
     }
 }
