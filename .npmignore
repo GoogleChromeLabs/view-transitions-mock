@@ -1,0 +1,10 @@
+# Source files
+/src
+/demo
+
+# Dependencies
+/node_modules
+
+# Other files
+.gitignore
+tsconfig.json
