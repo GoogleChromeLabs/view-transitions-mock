@@ -8,6 +8,12 @@ type ResolveFunction = (value: void | PromiseLike<void>) => void;
 type RejectFunction = (reason?: any) => void;
 type PromiseStatus = "pending" | "resolved" | "rejected";
 
+let allowClassCreation = false;
+const setAllowClassCreation = (value: boolean): void => {
+  allowClassCreation = value;
+};
+export { setAllowClassCreation };
+
 class ViewTransition implements ViewTransitionInterface {
   // The promises and their resolve/reject functions
   #finished: Promise<void>;
@@ -36,6 +42,11 @@ class ViewTransition implements ViewTransitionInterface {
   #isBeingSkipped = false;
 
   constructor(updateCallback: ViewTransitionUpdateCallback) {
+    // Prevent externals from creating an instance
+    if (!allowClassCreation) {
+      throw new TypeError("Illegal constructor");
+    }
+
     // The updateCallbackDone promise.
     this.#updateCallbackState = "pending";
     this.#updateCallbackDone = new Promise((res, rej) => {

@@ -2,7 +2,10 @@ import {
   ViewTransitionUpdateCallback,
   StartViewTransitionOptions,
 } from "./types";
-import { ViewTransition } from "./classes/ViewTransition";
+import {
+  ViewTransition,
+  setAllowClassCreation,
+} from "./classes/ViewTransition";
 
 let activeViewTransition: ViewTransition | null = null;
 
@@ -32,7 +35,9 @@ const startViewTransition = (
   }
 
   // Create the (Mocked) View Transition
+  setAllowClassCreation(true);
   const transition = new ViewTransition(callback);
+  setAllowClassCreation(false);
   types.forEach((t) => transition.types.add(t));
 
   // Store it as the activeViewTransition

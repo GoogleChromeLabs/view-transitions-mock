@@ -22,7 +22,7 @@ const register = (force: boolean = false): void => {
     });
 
     document.startViewTransition = startViewTransition;
-    
+
     registered = true;
 
     console.info("Support for Same-Document View Transitions is now mocked");
