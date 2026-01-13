@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@layer reset, ui, demo;
+
 @layer demo {
   .box {
     aspect-ratio: 1;
@@ -24,7 +26,23 @@
 			hyphens: manual;
 		}
   }
-	
+}
+
+@layer ui {
+	#controls {
+		position: fixed;
+		top: 0em;
+		right: 0em;
+		background-color: white;
+		padding: 0.5em;
+		display: flex;
+		flex-direction: row;
+		gap: 1em;
+		z-index: 1;
+	}
+}
+
+@layer reset {
 	* {
 		box-sizing: border-box;
 	}

@@ -13,12 +13,25 @@
   <link rel="stylesheet" href="demo.css">
   <script type="module" src="demo.js"></script>
 
-  <script type="module" blocking="render">
-    import { register } from "./view-transitions-mock.js";
-    register(true);
+  <script type="module">
+    import { register, unregister } from "./view-transitions-mock.js";
+    
+    document.getElementById('register').addEventListener('click', e => {
+      e.preventDefault();
+      register(true);
+    });
+
+    document.getElementById('unregister').addEventListener('click', e => {
+      e.preventDefault();
+      unregister();
+    });
   </script>
 </head>
 <body>
+  <div id="controls">
+    <button id="register">Register Mock</button>
+    <button id="unregister">Unregister Mock</button>
+  </div>
   <div class="box">
     <span>ViewTransitions Mock<br>Click to trigger</span>
   </div>

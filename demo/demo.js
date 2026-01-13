@@ -73,6 +73,11 @@ const mutate = () => {
 };
 
 document.body.addEventListener("click", async (e) => {
+  // If the click is inside the #controls element, don't trigger a transition.
+  if (e.composedPath().includes(document.getElementById("controls"))) {
+    return;
+  }
+  
   console.log("=== startViewTransition");
   const t = document.startViewTransition(mutate);
   // t.skipTransition();
