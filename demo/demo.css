@@ -1,0 +1,42 @@
+@layer demo {
+  .box {
+    aspect-ratio: 1;
+    inline-size: 20vmin;
+    background: blue;
+		color: white;
+		overflow: hidden;
+		
+		display: grid;
+		place-content: center;
+		text-align: center;
+		user-select: none;
+		
+		view-transition-name: box;
+		
+		
+		span {			
+			overflow-wrap: break-word;
+			hyphens: manual;
+		}
+  }
+	
+	* {
+		box-sizing: border-box;
+	}
+	
+	html, body {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+	}
+  
+  body {
+    display: grid;
+    place-content: center;
+		padding: 1em;
+  }
+  
+  html {
+    view-transition-name: none;
+  }
+}

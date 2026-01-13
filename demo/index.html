@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>View Transitions Mock Demo</title>
+
+  <link rel="stylesheet" href="demo.css">
+  <script type="module" src="demo.js"></script>
+
+  <script type="module" blocking="render">
+    import { register } from "./view-transitions-mock.js";
+    register(true);
+  </script>
 </head>
 <body>
-  
+  <div class="box">
+    <span>ViewTransitions Mock<br>Click to trigger</span>
+  </div>
 </body>
 </html>
