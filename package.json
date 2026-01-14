@@ -24,6 +24,7 @@
         "pretest": "npm run build && npx playwright install --with-deps",
         "test": "playwright test",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
+        "prepare": "husky install",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
         "require-pristine-tree": "exit $(git status --porcelain | wc -l)",
         "add-license-headers": "addlicense -c 'Google LLC' -l apache -s=only -f=./LICENSE ."
@@ -52,6 +53,7 @@
         "concurrently": "^9.2.1",
         "esbuild": "^0.27.2",
         "prettier": "^3.4.1",
-        "typescript": "^5.7.2"
+        "typescript": "^5.7.2",
+        "husky": "^8.0.0"
     }
 }
