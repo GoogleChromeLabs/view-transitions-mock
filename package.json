@@ -21,7 +21,8 @@
         "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "prepublish": "npm run build",
         "type-check": "tsc --noEmit",
-        "test": "vitest --environment jsdom",
+        "pretest": "npm run build",
+        "test": "playwright test",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
         "require-pristine-tree": "exit $(git status --porcelain | wc -l)",
@@ -48,9 +49,8 @@
     "devDependencies": {
         "concurrently": "^9.2.1",
         "esbuild": "^0.27.2",
-        "jsdom": "^27.4.0",
         "prettier": "^3.4.1",
         "typescript": "^5.7.2",
-        "vitest": "^4.0.17"
+        "@playwright/test": "^1.42.1"
     }
 }
