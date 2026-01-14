@@ -21,7 +21,7 @@
         "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "prepublish": "npm run build",
         "type-check": "tsc --noEmit",
-        "pretest": "npm run build",
+        "pretest": "npm run build && npx playwright install --with-deps",
         "test": "playwright test",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
