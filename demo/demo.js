@@ -77,7 +77,7 @@ document.body.addEventListener("click", async (e) => {
   if (e.composedPath().includes(document.getElementById("controls"))) {
     return;
   }
-  
+
   console.log("=== startViewTransition");
   const t = document.startViewTransition(mutate);
   // t.skipTransition();

@@ -89,7 +89,9 @@ const unregister = (): void => {
 
   registered = false;
 
-  console.info("Support for Same-Document View Transitions is no longer mocked");
+  console.info(
+    "Support for Same-Document View Transitions is no longer mocked",
+  );
 };
 
 export { register, unregister };
