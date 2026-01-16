@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import WatchablePromise from "watchable-promise";
+
 import {
   ViewTransition as ViewTransitionInterface,
   ViewTransitionUpdateCallback,
@@ -11,7 +13,6 @@ import { ViewTransitionTypeSet } from "./ViewTransitionTypeSet";
 
 type ResolveFunction = (value: void | PromiseLike<void>) => void;
 type RejectFunction = (reason?: any) => void;
-type PromiseStatus = "pending" | "resolved" | "rejected";
 
 let allowClassCreation = false;
 const setAllowClassCreation = (value: boolean): void => {
@@ -21,24 +22,9 @@ export { setAllowClassCreation };
 
 class ViewTransition implements ViewTransitionInterface {
   // The promises and their resolve/reject functions
-  #finished: Promise<void>;
-  // @ts-ignore
-  #resolveFinished: ResolveFunction;
-  // @ts-ignore
-  #rejectFinished: RejectFunction;
-
-  #ready: Promise<void>;
-  // @ts-ignore
-  #resolveReady: ResolveFunction;
-  // @ts-ignore
-  #rejectReady: RejectFunction;
-
-  #updateCallbackDone: Promise<void>;
-  // @ts-ignore
-  #resolveUpdateCallbackDone: ResolveFunction;
-  // @ts-ignore
-  #rejectUpdateCallbackDone: RejectFunction;
-  #updateCallbackState: PromiseStatus;
+  #finished: WatchablePromise<void>;
+  #ready: WatchablePromise<void>;
+  #updateCallbackDone: WatchablePromise<void>;
 
   #types: ViewTransitionTypeSet;
   #updateCallback: ViewTransitionUpdateCallback;
@@ -53,23 +39,13 @@ class ViewTransition implements ViewTransitionInterface {
     }
 
     // The updateCallbackDone promise.
-    this.#updateCallbackState = "pending";
-    this.#updateCallbackDone = new Promise((res, rej) => {
-      this.#resolveUpdateCallbackDone = res;
-      this.#rejectUpdateCallbackDone = rej;
-    });
+    this.#updateCallbackDone = new WatchablePromise((resolve, reject) => {});
 
     // The ready promise.
-    this.#ready = new Promise((res, rej) => {
-      this.#resolveReady = res;
-      this.#rejectReady = rej;
-    });
+    this.#ready = new WatchablePromise((resolve, reject) => {});
 
     // The finished promise.
-    this.#finished = new Promise((res, rej) => {
-      this.#resolveFinished = res;
-      this.#rejectFinished = rej;
-    });
+    this.#finished = new WatchablePromise((resolve, reject) => {});
 
     // The types
     this.#types = new ViewTransitionTypeSet();
@@ -85,11 +61,11 @@ class ViewTransition implements ViewTransitionInterface {
     if (this.#isBeingSkipped == false) {
       try {
         await this.#flushTheUpdateCallbackQueue();
-        this.#resolveReady();
-        this.#resolveFinished();
+        this.#ready.resolve();
+        this.#finished.resolve();
       } catch (e) {
-        this.#rejectReady();
-        this.#rejectFinished();
+        this.#ready.reject();
+        this.#finished.reject();
       }
     }
   };
@@ -101,22 +77,23 @@ class ViewTransition implements ViewTransitionInterface {
 
     // Spec: Reject transition’s ready promise with reason.
     // @TODO: Ready should not reject if already resolved
-    await this.#rejectReady(
+    await this.#ready.reject(
       new DOMException("Transition was skipped", "AbortError"),
     );
 
     // Spec: If transition’s phase is before "update-callback-called", then schedule the update callback for transition.
-    if (this.#updateCallbackState == "pending") {
+    if (this.#updateCallbackDone.state == "pending") {
       try {
         await this.#flushTheUpdateCallbackQueue();
       } catch (e) {}
     }
 
     // Spec: Resolve transition’s finished promise with the result of reacting to transition’s update callback done promise
-    if (this.#updateCallbackState == "resolved") {
-      this.#resolveFinished();
+    // If the promise was fulfilled, then return undefined.
+    if (this.#updateCallbackDone.state == "fulfilled") {
+      await this.#finished.resolve();
     } else {
-      this.#rejectFinished();
+      this.#finished.reject();
     }
   };
 
@@ -124,11 +101,9 @@ class ViewTransition implements ViewTransitionInterface {
     try {
       this.#updateCallback();
 
-      this.#updateCallbackState = "resolved";
-      this.#resolveUpdateCallbackDone();
+      this.#updateCallbackDone.resolve();
     } catch (e) {
-      this.#updateCallbackState = "rejected";
-      this.#rejectUpdateCallbackDone();
+      this.#updateCallbackDone.reject();
     }
 
     return this.#updateCallbackDone;
