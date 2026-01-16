@@ -97,6 +97,7 @@ class ViewTransition implements ViewTransitionInterface {
     // If the promise was fulfilled, then return undefined.
     if (this.#updateCallbackDone.state == "fulfilled") {
       await this.#finished.resolve();
+      return undefined;
     } else {
       this.#finished.reject();
     }
