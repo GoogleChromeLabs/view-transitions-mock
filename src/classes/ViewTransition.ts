@@ -79,10 +79,12 @@ class ViewTransition implements ViewTransitionInterface {
     this.#isBeingSkipped = true;
 
     // Spec: Reject transition’s ready promise with reason.
-    // @TODO: Ready should not reject if already resolved
-    await this.#ready.reject(
-      new DOMException("Transition was skipped", "AbortError"),
-    );
+    // @note: We are not following the order of the spec here. In the spec, this step comes later. However, it was moved up to match the order of what native implementations do.
+    if (this.#ready.state == "pending") {
+      await this.#ready.reject(
+        new DOMException("Transition was skipped", "AbortError"),
+      );
+    }
 
     // Spec: If transition’s phase is before "update-callback-called", then schedule the update callback for transition.
     if (this.#updateCallbackDone.state == "pending") {
