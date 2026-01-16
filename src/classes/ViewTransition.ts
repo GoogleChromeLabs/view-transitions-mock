@@ -72,7 +72,10 @@ class ViewTransition implements ViewTransitionInterface {
 
   // @ref https://drafts.csswg.org/css-view-transitions-1/#dom-viewtransition-skiptransition
   // Spec: If this’s phase is not "done", then skip the view transition for this with an "AbortError" DOMException.
+  // @note: We don’t check the phase because we don’t keep track of it. Instead we use isBeingSkipped
   skipTransition = async (): Promise<void> => {
+    if (this.#isBeingSkipped) return;
+
     this.#isBeingSkipped = true;
 
     // Spec: Reject transition’s ready promise with reason.
