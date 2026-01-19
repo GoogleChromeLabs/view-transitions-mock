@@ -57,6 +57,6 @@
         "typescript": "^5.7.2"
     },
     "dependencies": {
-        "watchable-promise": "^2.1.0"
+        "watchable-promise": "^2.1.3"
     }
 }

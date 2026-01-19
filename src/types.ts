@@ -31,9 +31,25 @@ interface StartViewTransitionOptions {
 
 interface ViewTransitionTypeSet extends Set<string> {}
 
+// @ref https://drafts.csswg.org/css-view-transitions-1/#viewtransition-phase
+type ViewTransitionPhase =
+  | "pending-capture"
+  | "update-callback-called"
+  | "animating"
+  | "done";
+
+const possibleViewTransitionPhases: ViewTransitionPhase[] = [
+  "pending-capture",
+  "update-callback-called",
+  "animating",
+  "done",
+];
+
 export {
   ViewTransition,
   ViewTransitionUpdateCallback,
   StartViewTransitionOptions,
   ViewTransitionTypeSet,
+  ViewTransitionPhase,
+  possibleViewTransitionPhases,
 };

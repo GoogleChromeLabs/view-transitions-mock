@@ -8,8 +8,11 @@ import WatchablePromise from "watchable-promise";
 import {
   ViewTransition as ViewTransitionInterface,
   ViewTransitionUpdateCallback,
+  ViewTransitionPhase,
+  possibleViewTransitionPhases,
 } from "../types";
 import { ViewTransitionTypeSet } from "./ViewTransitionTypeSet";
+import { skipTheViewTransition } from "../same-document";
 
 type ResolveFunction = (value: void | PromiseLike<void>) => void;
 type RejectFunction = (reason?: any) => void;
@@ -27,12 +30,12 @@ class ViewTransition implements ViewTransitionInterface {
   #updateCallbackDone: WatchablePromise<void>;
 
   #types: ViewTransitionTypeSet;
-  #updateCallback: ViewTransitionUpdateCallback;
+  #updateCallback: ViewTransitionUpdateCallback | null = null;
 
-  // We need this flag to be able to skip the transition before it actually starts.
-  #isBeingSkipped = false;
+  // The phase – One of the possible VT phases, initially "pending-capture"
+  #phase = possibleViewTransitionPhases[0];
 
-  constructor(updateCallback: ViewTransitionUpdateCallback) {
+  constructor() {
     // Prevent externals from creating an instance
     if (!allowClassCreation) {
       throw new TypeError("Illegal constructor");
@@ -49,87 +52,80 @@ class ViewTransition implements ViewTransitionInterface {
 
     // The types
     this.#types = new ViewTransitionTypeSet();
-
-    // The updateCallback
-    this.#updateCallback = updateCallback;
-
-    // Start the transition
-    window.queueMicrotask(this.#start);
   }
 
-  #start = async (): Promise<void> => {
-    if (this.#isBeingSkipped == false) {
-      try {
-        await this.#flushTheUpdateCallbackQueue();
-        this.#ready.resolve();
-        this.#finished.resolve();
-      } catch (e) {
-        this.#ready.reject();
-        this.#finished.reject();
-      }
-    }
-  };
+  // #start = async (): Promise<void> => {
+  //   if (this.#isBeingSkipped == false) {
+  //     try {
+  //       await this.#flushTheUpdateCallbackQueue();
+  //       this.#ready.resolve();
+  //       this.#finished.resolve();
+  //     } catch (e) {
+  //       this.#ready.reject();
+  //       this.#finished.reject();
+  //     }
+  //   }
+  // };
 
   // @ref https://drafts.csswg.org/css-view-transitions-1/#dom-viewtransition-skiptransition
-  // Spec: If this’s phase is not "done", then skip the view transition for this with an "AbortError" DOMException.
-  // @note: We don’t check the phase because we don’t keep track of it. Instead we use isBeingSkipped
-  skipTransition = async (): Promise<void> => {
-    if (this.#isBeingSkipped) return;
-
-    this.#isBeingSkipped = true;
-
-    // Spec: Reject transition’s ready promise with reason.
-    // @note: We are not following the order of the spec here. In the spec, this step comes later. However, it was moved up to match the order of what native implementations do.
-    if (this.#ready.state == "pending") {
-      await this.#ready.reject(
-        new DOMException("Transition was skipped", "AbortError"),
+  skipTransition = (): undefined => {
+    // 1. If this’s phase is not "done", then skip the view transition for this with an "AbortError" DOMException.
+    if (this.#phase !== "done") {
+      skipTheViewTransition(
+        this,
+        new DOMException(
+          "ViewTransition.skipTransition() was called",
+          "AbortError",
+        ),
       );
     }
 
-    // Spec: If transition’s phase is before "update-callback-called", then schedule the update callback for transition.
-    if (this.#updateCallbackDone.state == "pending") {
-      try {
-        await this.#flushTheUpdateCallbackQueue();
-      } catch (e) {}
-    }
-
-    // Spec: Resolve transition’s finished promise with the result of reacting to transition’s update callback done promise
-    // If the promise was fulfilled, then return undefined.
-    if (this.#updateCallbackDone.state == "fulfilled") {
-      await this.#finished.resolve();
-      return undefined;
-    } else {
-      this.#finished.reject();
-    }
+    return undefined;
   };
 
-  #flushTheUpdateCallbackQueue = async (): Promise<void> => {
-    try {
-      this.#updateCallback();
-
-      this.#updateCallbackDone.resolve();
-    } catch (e) {
-      this.#updateCallbackDone.reject();
-    }
-
+  // @TODO: The spec defines this as Promise<undefined>
+  get updateCallbackDone(): WatchablePromise<void> {
     return this.#updateCallbackDone;
-  };
-
-  get finished(): Promise<void> {
-    return this.#finished;
   }
 
-  get ready(): Promise<void> {
+  // @TODO: The spec defines this as Promise<undefined>
+  get ready(): WatchablePromise<void> {
     return this.#ready;
   }
 
-  get updateCallbackDone(): Promise<void> {
-    return this.#updateCallbackDone;
+  // @TODO: The spec defines this as Promise<undefined>
+  get finished(): WatchablePromise<void> {
+    return this.#finished;
   }
 
   get types(): ViewTransitionTypeSet {
     return this.#types;
   }
+
+  // @TODO: This should not be exposed
+  set phase(phase: ViewTransitionPhase) {
+    if (!possibleViewTransitionPhases.includes(phase)) {
+      throw new Error("Invalid phase");
+    }
+    this.#phase = phase;
+  }
+
+  // @TODO: This should not be exposed
+  get phase(): ViewTransitionPhase {
+    return this.#phase;
+  }
+
+  // @TODO: This should not be expose
+  set updateCallback(callback: ViewTransitionUpdateCallback) {
+    this.#updateCallback = callback;
+  }
+
+  get updateCallback(): ViewTransitionUpdateCallback | null {
+    return this.#updateCallback;
+  }
+
+  // @TODO: transitionRoot
+  // @TODO: waitUntil
 }
 
 export { ViewTransition };

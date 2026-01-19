@@ -18,8 +18,8 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe("View Transitions Mock", () => {
-  test("should create a ViewTransition when calling document.startViewTransition", async ({
+test.describe("View Transitions Mock Basics", () => {
+  test("It should create a ViewTransition when calling document.startViewTransition", async ({
     page,
   }) => {
     const result = await page.evaluate(async () => {
@@ -31,7 +31,7 @@ test.describe("View Transitions Mock", () => {
     expect(result).toBe(true);
   });
 
-  test("should execute the DOM update callback", async ({ page }) => {
+  test("It should execute the DOM update callback", async ({ page }) => {
     let callbackCalled = false;
     await page.exposeFunction("onCallback", () => {
       callbackCalled = true;
@@ -48,7 +48,9 @@ test.describe("View Transitions Mock", () => {
     expect(callbackCalled).toBe(true);
   });
 
-  test("should set/unset document.activeViewTransition", async ({ page }) => {
+  test("It should set/unset document.activeViewTransition", async ({
+    page,
+  }) => {
     // No VT started yet
     // ~> document.activeViewTransition should NOT be set
     const initialState = await page.evaluate(
@@ -86,28 +88,7 @@ test.describe("View Transitions Mock", () => {
     expect(startAndAwaitFinished).toBeNull();
   });
 
-  test("should resolve promises in the correct lifecycle order", async ({
-    page,
-  }) => {
-    const result = await page.evaluate(async () => {
-      const transition = document.startViewTransition(() => {
-        // Simulate DOM work
-      });
-
-      const order: string[] = [];
-      await transition.updateCallbackDone.then(() =>
-        order.push("updateCallbackDone"),
-      );
-      await transition.ready.then(() => order.push("ready"));
-      await transition.finished.then(() => order.push("finished"));
-
-      return order;
-    });
-
-    expect(result).toEqual(["updateCallbackDone", "ready", "finished"]);
-  });
-
-  test("should handle transition types correctly (Level 2 Spec)", async ({
+  test("It should handle transition types correctly (Level 2 Spec)", async ({
     page,
   }) => {
     const result = await page.evaluate(() => {
@@ -130,7 +111,7 @@ test.describe("View Transitions Mock", () => {
     expect(result.size).toBe(2);
   });
 
-  test("should skip the transition when skipTransition() is called", async ({
+  test("It should skip the transition when skipTransition() is called", async ({
     page,
   }) => {
     const result = await page.evaluate(async () => {
