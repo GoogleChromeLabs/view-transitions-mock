@@ -35,6 +35,10 @@ class ViewTransition implements ViewTransitionInterface {
   // The phase – One of the possible VT phases, initially "pending-capture"
   #phase = possibleViewTransitionPhases[0];
 
+  // The ViewTransition’s root element.
+  // For view transitions started on the Document, this is the document element.
+  #transitionRoot: Element | null = null;
+
   constructor() {
     // Prevent externals from creating an instance
     if (!allowClassCreation) {
@@ -85,6 +89,10 @@ class ViewTransition implements ViewTransitionInterface {
     return this.#finished;
   }
 
+  set types(types: Set<string>) {
+    this.#types = types;
+  }
+
   get types(): ViewTransitionTypeSet {
     return this.#types;
   }
@@ -102,7 +110,7 @@ class ViewTransition implements ViewTransitionInterface {
     return this.#phase;
   }
 
-  // @TODO: This should not be expose
+  // @TODO: This should not be exposed
   set updateCallback(callback: ViewTransitionUpdateCallback | null) {
     this.#updateCallback = callback;
   }
@@ -111,7 +119,20 @@ class ViewTransition implements ViewTransitionInterface {
     return this.#updateCallback;
   }
 
-  // @TODO: transitionRoot
+  // @TODO: This should not be exposed
+  set transitionRoot(root: Element | Document) {
+    if (root === window.document) {
+      this.#transitionRoot = window.document.documentElement;
+    } else {
+      this.#transitionRoot = root as Element;
+    }
+  }
+
+  // @TODO: Officially this cannot return null …
+  get transitionRoot(): Element | null {
+    return this.#transitionRoot;
+  }
+
   // @TODO: waitUntil
 }
 

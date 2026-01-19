@@ -65,7 +65,7 @@ const register = (
     });
 
     Reflect.defineProperty(document, "startViewTransition", {
-      value: startViewTransition,
+      value: startViewTransition.bind(document),
       configurable: true,
       writable: true,
     });

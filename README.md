@@ -4,7 +4,7 @@ Mock support for `document.startViewTransition` in browsers with no support.
 
 ## Overview
 
-This library mocks `document.startViewTransition` along with `document.activeViewTransition`. With the mock installed, you can safely call `document.startViewTransition()` – and rely on its promises and what not – without it throwing an error in browsers that have no support for it.
+This library mocks `document.startViewTransition` along with `document.activeViewTransition` and `ViewTransition.transitionRoot`. With the mock installed, you can safely call `document.startViewTransition()` – and rely on its promises and what not – without it throwing an error in browsers that have no support for it.
 
 This way, you don’t need to sprinkle `if (document.startViewTransition) …` checks throughout your code.
 

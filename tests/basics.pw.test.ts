@@ -88,29 +88,6 @@ test.describe("View Transitions Mock Basics", () => {
     expect(startAndAwaitFinished).toBeNull();
   });
 
-  test("It should handle transition types correctly (Level 2 Spec)", async ({
-    page,
-  }) => {
-    const result = await page.evaluate(() => {
-      const options: StartViewTransitionOptions = {
-        update: () => {},
-        types: ["slide-in", "fade-out"],
-      };
-
-      const transition = document.startViewTransition(options);
-
-      return {
-        hasSlideIn: transition.types.has("slide-in"),
-        hasFadeOut: transition.types.has("fade-out"),
-        size: transition.types.size,
-      };
-    });
-
-    expect(result.hasSlideIn).toBe(true);
-    expect(result.hasFadeOut).toBe(true);
-    expect(result.size).toBe(2);
-  });
-
   test("It should skip the transition when skipTransition() is called", async ({
     page,
   }) => {

@@ -24,70 +24,74 @@ let updateCallbackQueue: any[] = [];
 
 let renderingSuppression = false;
 
-const startViewTransition = (
+function startViewTransition(
+  this: Document | Element,
   params?: ViewTransitionUpdateCallback | StartViewTransitionOptions,
-): ViewTransition => {
+): ViewTransition {
   let updateCallback: ViewTransitionUpdateCallback | null | undefined = null;
-  let types: string[] = [];
+  let types: Set<string> = new Set();
 
-  // Extract the updateCallback and types
+  // @ref https://drafts.csswg.org/css-view-transitions-2/#dom-element-startviewtransition (We already to this from L2 of the spec, to support types and transitionRoot)
+
+  // 1. Let document be this’s relevant global object’s associated document.
+  // @NOTIMPLEMENTED
+
+  // 2. Let viewTransition be a new ViewTransition object in document’s relevant Realm, with root element set to this.
+  setAllowClassCreation(true);
+  const transition = new ViewTransition();
+  setAllowClassCreation(false);
+  transition.transitionRoot = this;
+
+  // 3. If callbackOptions is a ViewTransitionUpdateCallback, set viewTransition’s update callback to callbackOptions.
+  // Otherwise, if callbackOptions is a StartViewTransitionOptions, then set viewTransition’s update callback to callbackOptions’s update.
   if (typeof params === "function") {
     updateCallback = params;
   } else if (params && typeof params === "object") {
     updateCallback = params.update;
-    types = params.types ?? [];
   }
-
-  // @ref https://drafts.csswg.org/css-view-transitions-1/#ViewTransition-prepare
-
-  // 1. Let transition be a new ViewTransition object in this’s relevant Realm.
-  setAllowClassCreation(true);
-  const transition = new ViewTransition();
-  setAllowClassCreation(false);
-  types.forEach((t) => transition.types.add(t));
-
-  // 2. If updateCallback is provided, set transition’s update callback to updateCallback.
   if (updateCallback) {
     transition.updateCallback = updateCallback;
   }
 
-  // 3. Let document be this’s relevant global object’s associated document.
+  // 4. If this doesn’t have layout containment, skip viewTransition with an "InvalidStateError" DOMException, and return viewTransition.
   // @NOTIMPLEMENTED
 
-  // 4. If document’s visibility state is "hidden", then skip transition with an "InvalidStateError" DOMException, and return transition.
-  if (document.visibilityState === "hidden") {
-    skipTheViewTransition(
-      transition,
-      new DOMException(
-        'The document\'s visibility state is "hidden"',
-        "InvalidStateError",
-      ),
-    );
-    return transition;
-  }
+  // 5. If document’s active view transition is not null and its outbound post-capture steps is not null, then:
+  // 5.1 Skip viewTransition with an "InvalidStateError" DOMException.
+  // 5.2 Return viewTransition.
+  // @NOTIMPLEMENTED
 
-  // 5. If document’s active view transition is not null, then skip that view transition with an "AbortError" DOMException in this’s relevant Realm.
+  // 6. If this’s active view transition is not null, then skip that view transition with an "AbortError" DOMException in this’s relevant Realm.
   if (activeViewTransition) {
     skipTheViewTransition(
       activeViewTransition,
       new DOMException(
-        "Document.startViewTransition() was called",
+        "Skipped ViewTransition due to another transition starting",
         "AbortError",
       ),
     );
     activeViewTransition = null;
   }
 
-  // 6. Set document’s active view transition to transition.
-  // NOTE: The view transition process continues in setup view transition, via perform pending transition operations.
+  // 7. Set this’s active view transition to viewTransition.
   activeViewTransition = transition;
+
+  // NOTE: The view transition process continues in setup view transition, via perform pending transition operations.
   window.queueMicrotask(async () => {
     await performPendingOperations();
   });
 
-  // 7. Return transition.
+  // 8. If callbackOptions is a StartViewTransitionOptions, set viewTransition’s active types to a clone of types as a set.
+  if (params && typeof params === "object") {
+    if (params.types) {
+      types = new Set(structuredClone(params.types));
+    }
+    transition.types = types;
+  }
+
+  // 9. Return transition.
   return transition;
-};
+}
 
 const getActiveViewTranstion = (): ViewTransition | null => {
   return activeViewTransition;
