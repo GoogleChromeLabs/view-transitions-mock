@@ -1,6 +1,6 @@
 {
     "name": "view-transitions-mock",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Mock support for Same-Document View Transitions",
     "type": "module",
     "module": "dist/index.js",
