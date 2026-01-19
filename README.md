@@ -6,7 +6,32 @@ Mock support for `document.startViewTransition` in browsers with no support.
 
 This library mocks `document.startViewTransition` along with `document.activeViewTransition`. With the mock installed, you can safely call `document.startViewTransition()` – and rely on its promises and what not – without it throwing an error in browsers that have no support for it.
 
-This way, you don’t need to sprinkle the `if (document.startViewTransition) …` check throughout your code.
+This way, you don’t need to sprinkle `if (document.startViewTransition) …` checks throughout your code.
+
+- Without `view-transitions-mock`:
+
+    ```javascript
+    document.querySelector('button').addEventListener('click', async () => {
+      if (document.startViewTransition) {
+        document.querySelector('#thing').style.viewTransitionName = 'the-thing';
+        const t = document.startViewTransition(updateTheDOM);
+        await t.finished;
+        document.querySelector('#thing').style.viewTransitionName = '';
+      } else {
+        updateTheDOM();
+      }
+    });
+
+- With `view-transitions-mock` registered:
+
+    ```javascript
+    document.querySelector('button').addEventListener('click', async () => {
+        document.querySelector('#thing').style.viewTransitionName = 'the-thing';
+        const t = document.startViewTransition(updateTheDOM);
+        await t.finished;
+        document.querySelector('#thing').style.viewTransitionName = '';
+    });
+    ```
 
 ## Installation
 
