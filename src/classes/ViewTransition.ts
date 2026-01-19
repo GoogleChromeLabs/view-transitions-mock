@@ -54,19 +54,6 @@ class ViewTransition implements ViewTransitionInterface {
     this.#types = new ViewTransitionTypeSet();
   }
 
-  // #start = async (): Promise<void> => {
-  //   if (this.#isBeingSkipped == false) {
-  //     try {
-  //       await this.#flushTheUpdateCallbackQueue();
-  //       this.#ready.resolve();
-  //       this.#finished.resolve();
-  //     } catch (e) {
-  //       this.#ready.reject();
-  //       this.#finished.reject();
-  //     }
-  //   }
-  // };
-
   // @ref https://drafts.csswg.org/css-view-transitions-1/#dom-viewtransition-skiptransition
   skipTransition = (): undefined => {
     // 1. If this’s phase is not "done", then skip the view transition for this with an "AbortError" DOMException.
@@ -116,7 +103,7 @@ class ViewTransition implements ViewTransitionInterface {
   }
 
   // @TODO: This should not be expose
-  set updateCallback(callback: ViewTransitionUpdateCallback) {
+  set updateCallback(callback: ViewTransitionUpdateCallback | null) {
     this.#updateCallback = callback;
   }
 

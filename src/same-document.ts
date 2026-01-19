@@ -27,21 +27,15 @@ let renderingSuppression = false;
 const startViewTransition = (
   params?: ViewTransitionUpdateCallback | StartViewTransitionOptions,
 ): ViewTransition => {
-  let callback: ViewTransitionUpdateCallback | null | undefined = null;
+  let updateCallback: ViewTransitionUpdateCallback | null | undefined = null;
   let types: string[] = [];
 
-  // Extract the callback and types
+  // Extract the updateCallback and types
   if (typeof params === "function") {
-    callback = params;
+    updateCallback = params;
   } else if (params && typeof params === "object") {
-    callback = params.update;
+    updateCallback = params.update;
     types = params.types ?? [];
-  }
-
-  // @TODO: This is not spec compliant. Remove this.
-  // Make sure there is a callback
-  if (!callback) {
-    callback = () => {};
   }
 
   // @ref https://drafts.csswg.org/css-view-transitions-1/#ViewTransition-prepare
@@ -53,7 +47,9 @@ const startViewTransition = (
   types.forEach((t) => transition.types.add(t));
 
   // 2. If updateCallback is provided, set transition’s update callback to updateCallback.
-  transition.updateCallback = callback;
+  if (updateCallback) {
+    transition.updateCallback = updateCallback;
+  }
 
   // 3. Let document be this’s relevant global object’s associated document.
   // @NOTIMPLEMENTED
