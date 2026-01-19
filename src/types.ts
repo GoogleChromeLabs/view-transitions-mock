@@ -45,6 +45,11 @@ const possibleViewTransitionPhases: ViewTransitionPhase[] = [
   "done",
 ];
 
+type RegistrationTrigger = {
+  requireTypes: boolean;
+  forced: boolean;
+};
+
 export {
   ViewTransition,
   ViewTransitionUpdateCallback,
@@ -52,4 +57,5 @@ export {
   ViewTransitionTypeSet,
   ViewTransitionPhase,
   possibleViewTransitionPhases,
+  RegistrationTrigger,
 };

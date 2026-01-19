@@ -16,9 +16,19 @@
   <script type="module">
     import { register, unregister } from "./view-transitions-mock.js";
     
-    document.getElementById('register').addEventListener('click', e => {
+    document.getElementById('register-auto').addEventListener('click', e => {
       e.preventDefault();
-      register(true);
+      register();
+    });
+    
+    document.getElementById('register-norequiretypes').addEventListener('click', e => {
+      e.preventDefault();
+      register({ requireTypes: false });
+    });
+    
+    document.getElementById('register-forced').addEventListener('click', e => {
+      e.preventDefault();
+      register({ forced: true });
     });
 
     document.getElementById('unregister').addEventListener('click', e => {
@@ -29,7 +39,9 @@
 </head>
 <body>
   <div id="controls">
-    <button id="register">Register Mock</button>
+    <button id="register-auto">Register Mock (Default)</button>
+    <button id="register-norequiretypes">Register Mock (requireTypes: false)</button>
+    <button id="register-forced">Register Mock (forced: true)</button>
     <button id="unregister">Unregister Mock</button>
   </div>
   <div class="box">

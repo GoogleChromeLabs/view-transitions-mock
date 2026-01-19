@@ -7,6 +7,7 @@ import { startViewTransition, getActiveViewTranstion } from "./same-document";
 
 import { ViewTransition } from "./classes/ViewTransition";
 import { ViewTransitionTypeSet } from "./classes/ViewTransitionTypeSet";
+import { RegistrationTrigger } from "./types";
 
 let registered = false;
 
@@ -21,10 +22,33 @@ const nativeImplementations = {
   ),
 };
 
-const register = (force: boolean = false): void => {
+const defaultRegistrationTrigger = {
+  requireTypes: true,
+  forced: false,
+};
+
+const register = (
+  registrationTrigger: RegistrationTrigger = defaultRegistrationTrigger,
+): void => {
   if (registered) return;
 
-  if (!document.startViewTransition || force) {
+  const requireTypesSupport = registrationTrigger.requireTypes;
+  const forceRegister = registrationTrigger.forced;
+
+  const hasSameDocumentViewTransitionsSupport = !!document.startViewTransition;
+  const hasViewTransitionTypesSupport =
+    hasSameDocumentViewTransitionsSupport &&
+    nativeImplementations.ViewTransition &&
+    "types" in nativeImplementations.ViewTransition.prototype;
+
+  const needsRegistration =
+    !hasSameDocumentViewTransitionsSupport ||
+    (hasSameDocumentViewTransitionsSupport &&
+      !hasViewTransitionTypesSupport &&
+      requireTypesSupport) ||
+    forceRegister;
+
+  if (needsRegistration) {
     Reflect.defineProperty(window, "ViewTransition", {
       value: ViewTransition,
       configurable: true,

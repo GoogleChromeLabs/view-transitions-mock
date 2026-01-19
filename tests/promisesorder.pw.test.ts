@@ -48,7 +48,7 @@ test.describe("Promises Order", () => {
 
     // Force register the mock
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     // Mocked result
@@ -76,7 +76,7 @@ test.describe("Promises Order", () => {
 
     // Force register the mock
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     // Mocked result
@@ -106,7 +106,7 @@ test.describe("Promises Order", () => {
 
     // Force register the mock
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     // Mocked result
@@ -136,7 +136,7 @@ test.describe("Promises Order", () => {
 
     // Force register the mock
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     // Mocked result
@@ -165,7 +165,7 @@ test.describe("Promises Order", () => {
 
     // Force register the mock
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     // Mocked result

@@ -17,7 +17,7 @@ test.describe("Registration and Unregistration", () => {
     page.on("console", (msg) => messages.push(msg.text()));
 
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     expect(messages.length).toBe(1);
@@ -31,8 +31,8 @@ test.describe("Registration and Unregistration", () => {
     page.on("console", (msg) => messages.push(msg.text()));
 
     await page.evaluate(() => {
-      (window as any).register(true);
-      (window as any).register(true);
+      (window as any).register({ forced: true });
+      (window as any).register({ forced: true });
     });
 
     expect(messages.length).toBe(1);
@@ -48,7 +48,7 @@ test.describe("Registration and Unregistration", () => {
     page.on("console", (msg) => messages.push(msg.text()));
 
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     await page.evaluate(() => {
@@ -66,7 +66,7 @@ test.describe("Registration and Unregistration", () => {
     page.on("console", (msg) => messages.push(msg.text()));
 
     await page.evaluate(() => {
-      (window as any).register(true);
+      (window as any).register({ forced: true });
     });
 
     await page.evaluate(() => {
@@ -79,4 +79,6 @@ test.describe("Registration and Unregistration", () => {
       "Support for Same-Document View Transitions is no longer mocked",
     );
   });
+
+  // @TODO: Add test (using Firefox 144, 145, or 146) that tests `register({ requireTypes: true })`
 });

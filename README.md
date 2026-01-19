@@ -27,7 +27,28 @@ npm i view-transitions-mock
 
 2. Done.
 
-TIP: To force the registration, call `register(true)` instead of `register()`. Doing so will override the native implementation of View Transitions.
+## Registration Configuration
+
+By default, the registation of `view-transitions-mock` checks whether `document.startViewTransition` and View Transition Types are supported or not. When both are supported, it won’t register the mock.
+
+You can tweak the registration by passing an object with the following properties into the `register` function:
+
+- `requireTypes` _(`Boolean`, default value: `true`)_: Require support for View Transition Types.
+- `forced` _(`Boolean`, default value: `false`)_: Force register the mock, regardless of support.
+
+For example, if you are not relying on View Transition Types, call `register` as follows so that it does not register the mock in Firefox 144–146 which does not have support for View Transition Types:
+
+```javascript
+import { register } from "view-transitions-mock";
+register({ requireTypes: false });
+```
+
+Or if you want to disable native support for Same-Document View Transitions entirely – handy if you want to test how your site looks without View Transitions – call `register` as follows:
+
+```javascript
+import { register } from "view-transitions-mock";
+register({ forced: true });
+```
 
 ## License
 

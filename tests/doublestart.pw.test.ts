@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
   // Force register the mock
   await page.evaluate(() => {
-    (window as any).register(true);
+    (window as any).register({ forced: true });
   });
 });
 
