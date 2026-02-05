@@ -80,5 +80,28 @@ test.describe("Registration and Unregistration", () => {
     );
   });
 
-  // @TODO: Add test (using Firefox 144, 145, or 146) that tests `register({ requireTypes: true })`
+  test("should not register when there is native support for types", async ({
+    page,
+  }, testInfo) => {
+    const messages: string[] = [];
+
+    page.on("console", (msg) => messages.push(msg.text()));
+
+    await page.evaluate(() => {
+      (window as any).register({ requireTypes: true });
+    });
+
+    if (
+      testInfo.project.name.endsWith("-nosupport") ||
+      testInfo.project.name === "firefox-latest"
+    ) {
+      expect(messages.length).toBe(1);
+
+      expect(messages[0]).toBe(
+        "Support for Same-Document View Transitions is now mocked",
+      );
+    } else {
+      expect(messages.length).toBe(0);
+    }
+  });
 });
