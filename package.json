@@ -18,6 +18,8 @@
         "watch": "esbuild src/index.ts --sourcemap --bundle --outfile=demo/view-transitions-mock.js --platform=browser --format=esm --watch",
         "serve": "esbuild --servedir=demo",
         "dev": "npm run start",
+        "predeploy": "esbuild src/index.ts --sourcemap --bundle --outfile=demo/view-transitions-mock.js --platform=browser --format=esm",
+        "deploy": "gcloud storage rsync --recursive --delete-unmatched-destination-objects demo gs://chrome-dev-demos/public/view-transitions-mock",
         "prepack": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
         "prepublish": "npm run build",
         "type-check": "tsc --noEmit",

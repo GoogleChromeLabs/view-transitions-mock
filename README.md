@@ -75,6 +75,10 @@ import { register } from "view-transitions-mock";
 register({ forced: true });
 ```
 
+## Demo
+
+A demo can found in the `./demo` subfolder. Use the buttons to control the registration/unregistration of the mock. You can try the demo online at [https://chrome.dev/view-transitions-mock](https://chrome.dev/view-transitions-mock).
+
 ## License
 
 `view-transitions-mock` is released under the Apache 2.0 License. See the enclosed [`LICENSE`](./LICENSE) for details.
