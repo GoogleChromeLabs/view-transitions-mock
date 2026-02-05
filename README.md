@@ -41,10 +41,10 @@ npm i view-transitions-mock
 
 ## Usage
 
-1. Import and register the mock from within a blocking script.
+1. Import and register the mock before you make a call to `document.startViewTranstion`. For example:
 
     ```html
-    <script type="module" blocking="render">
+    <script type="module">
       import { register } from "view-transitions-mock";
       register();
     </script>
