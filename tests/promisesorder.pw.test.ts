@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
 test.describe("Promises Order", () => {
   test("It should resolve promises in the correct order (normal flow)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(order);
@@ -49,8 +49,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
@@ -64,7 +66,7 @@ test.describe("Promises Order", () => {
 
   test("It should resolve promises in the correct order (normal flow, no callback)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(
@@ -79,8 +81,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
@@ -94,7 +98,7 @@ test.describe("Promises Order", () => {
 
   test("It should resolve promises in the correct order (skip immediately)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(order);
@@ -107,8 +111,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["readyCatch", "updateCallbackDone", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
@@ -122,7 +128,7 @@ test.describe("Promises Order", () => {
 
   test("It should resolve promises in the correct order (skip after ready)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(order);
@@ -137,8 +143,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
@@ -152,7 +160,7 @@ test.describe("Promises Order", () => {
 
   test("It should resolve promises in the correct order (skip after updateCallbackDone)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(order);
@@ -167,8 +175,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
@@ -182,7 +192,7 @@ test.describe("Promises Order", () => {
 
   test("It should resolve promises in the correct order (skip after finished)", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const startVTAndReturnLoggedMessages = async () => {
       const order: string[] = [];
       const transition = (window as any).startAndWatchViewTransition(order);
@@ -196,8 +206,10 @@ test.describe("Promises Order", () => {
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
 
     // Native result
-    const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-    expect(nativeResult).toEqual(expectedResult);
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
 
     // Force register the mock
     await page.evaluate(() => {
