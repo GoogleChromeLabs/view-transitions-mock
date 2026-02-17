@@ -4,9 +4,13 @@ Mock support for Same-Document View Transitions in browsers with no support.
 
 ## Overview
 
-View Transitions Mock is a robust JavaScript implementation of Same-Document View Transitions (including View Transition Types). It is not a polyfill, as it doesn't replicate the pseudo-tree or the animations from View Transitions. Instead, it mocks support for `document.startViewTransition`, `document.activeViewTransition`, `ViewTransition.transitionRoot` and `ViewTransitionTypeSet`. This allows you to write modern, standard-compliant Same-Document View Transitions code for _any_ browser, including those without support for `document.startViewTransition` or View Transition Types.
+View Transitions Mock is a robust JavaScript implementation of Same-Document View Transitions and View Transition Types.
 
-Once [registered](#usage), stop sprinkling `if (document.startViewTransition)` guards across your codebase and, instead, safely call the API, handle its promises, and manage View Transition Types as if they were natively supported.
+It is not a polyfill, as it doesn't replicate the VT pseudo-tree nor the VT animations. Instead, it mocks support for `document.startViewTransition`, `Document.activeViewTransition`, `ViewTransition.transitionRoot` and Types.
+
+With the mock [registered](#usage), you can write modern standard-compliant Same-Document View Transitions code for _any_ browser, including those without support for `document.startViewTransition` or VT Types.
+
+Stop sprinkling `if (document.startViewTransition)` guards across your codebase. Instead, safely call the API, handle its promises, and manage VT Types as if they were natively supported!
 
 - Without `view-transitions-mock`:
 
