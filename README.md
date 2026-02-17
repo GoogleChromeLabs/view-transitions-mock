@@ -1,20 +1,23 @@
 # View Transitions Mock
 
-Mock support for `document.startViewTransition` in browsers with no support.
+Mock support for Same-Document View Transitions in browsers with no support.
 
 ## Overview
 
-This library mocks `document.startViewTransition` along with `document.activeViewTransition` and `ViewTransition.transitionRoot`. With the mock installed, you can safely call `document.startViewTransition()` – and rely on its promises and what not – without it throwing an error in browsers that have no support for it.
+View Transitions Mock is a robust JavaScript implementation of Same-Document View Transitions (including View Transition Types). It is not a polyfill, as it doesn't replicate the pseudo-tree or the animations from View Transitions. Instead, it mocks support for `document.startViewTransition`, `document.activeViewTransition`, `ViewTransition.transitionRoot` and `ViewTransitionTypeSet`. This allows you to write modern, standard-compliant Same-Document View Transitions code for _any_ browser, including those without support for `document.startViewTransition` or View Transition Types.
 
-This way, you don’t need to sprinkle `if (document.startViewTransition) …` checks throughout your code.
+Once [registered](#usage), stop sprinkling `if (document.startViewTransition)` guards across your codebase and, instead, safely call the API, handle its promises, and manage View Transition Types as if they were natively supported.
 
 - Without `view-transitions-mock`:
 
     ```javascript
     document.querySelector('button').addEventListener('click', async () => {
-      if (document.startViewTransition) {
+      if (document.startViewTransition && ("types" in ViewTransition?.prototype)) {
         document.querySelector('#thing').style.viewTransitionName = 'the-thing';
-        const t = document.startViewTransition(updateTheDOM);
+        const t = document.startViewTransition({
+          update: updateTheDOM,
+          types: ['slide', 'from-left']
+        });
         await t.finished;
         document.querySelector('#thing').style.viewTransitionName = '';
       } else {
@@ -22,14 +25,21 @@ This way, you don’t need to sprinkle `if (document.startViewTransition) …` c
       }
     });
 
-- With `view-transitions-mock` registered:
+- With `view-transitions-mock`:
 
     ```javascript
+    import { register } from "view-transitions-mock";
+    register();
+
+    // The code below works in _any_ browser, including those without Same-Document View Transitions or View Transition Types support.
     document.querySelector('button').addEventListener('click', async () => {
-        document.querySelector('#thing').style.viewTransitionName = 'the-thing';
-        const t = document.startViewTransition(updateTheDOM);
-        await t.finished;
-        document.querySelector('#thing').style.viewTransitionName = '';
+      document.querySelector('#thing').style.viewTransitionName = 'the-thing';
+      const t = document.startViewTransition({
+        update: updateTheDOM,
+        types: ['slide', 'from-left']
+      });
+      await t.finished;
+      document.querySelector('#thing').style.viewTransitionName = '';
     });
     ```
 
@@ -54,14 +64,14 @@ npm i view-transitions-mock
 
 ## Registration Configuration
 
-By default, the registation of `view-transitions-mock` checks whether `document.startViewTransition` and View Transition Types are supported or not. When both are supported, it won’t register the mock.
+By default, the registation of `view-transitions-mock` checks whether `document.startViewTransition` and View Transition Types are supported or not. When both are natively supported, it won’t register the mock.
 
 You can tweak the registration by passing an object with the following properties into the `register` function:
 
 - `requireTypes` _(`Boolean`, default value: `true`)_: Require support for View Transition Types.
 - `forced` _(`Boolean`, default value: `false`)_: Force register the mock, regardless of support.
 
-For example, if you are not relying on View Transition Types, call `register` as follows so that it does not register the mock in Firefox 144–146 which does not have support for View Transition Types:
+For example, if you are not relying on View Transition Types, call `register` as follows so that it does not register the mock in Firefox 144–146 (which does not have support for View Transition Types):
 
 ```javascript
 import { register } from "view-transitions-mock";
@@ -78,6 +88,16 @@ register({ forced: true });
 ## Demo
 
 A demo can found in the `./demo` subfolder. Use the buttons to control the registration/unregistration of the mock. You can try the demo online at [https://chrome.dev/view-transitions-mock](https://chrome.dev/view-transitions-mock).
+
+## Tests
+
+View Transitions Mock is tested with Playwright. It is tested in the following browsers:
+
+- Chromium 110.0.5481.38 _(No native VT support)_
+- Firefox 142.0.1 _(No native VT support)_
+- Chromium 145.0.7632.6 _(Full native VT support)_
+- Firefox 146.0.1 _(Partial native VT support (no View Transition Types))_
+- WebKit 26.0 _(Full native VT support)_
 
 ## License
 
