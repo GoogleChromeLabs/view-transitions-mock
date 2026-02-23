@@ -1,25 +1,41 @@
 # View Transitions Mock
 
-Bringing Same-Document View Transitions to all browsers. Kinda.
+A non-visual polyfill for Same-Document View Transitions.
 
-## Overview
+## Not a polyfill. Or is it?
 
-`view-transitions-mock` is a [robust](#tests) JavaScript implementation of Same-Document View Transitions. It provides the full API surface for `document.startViewTransition`, `document.activeViewTransition`, `ViewTransition.transitionRoot`, and View Transition Types in browsers that lack native support.
+`view-transitions-mock` a [spec-compliant](#tests) JavaScript implementation of Same-Document View Transitions, but without the animation bits. It polyfills the full JavaScript API surface of Same-Document View Transitions, including:
 
-While it is not a *visual* polyfill – meaning it doesn't replicate the CSS pseudo-tree or native animations – it is a complete functional _mock_. This allows you to safely trigger Same-Document View Transitions, handle promises, and manage View Transition Types as if the browser natively supported the spec.
+- `document.startViewTransition()`
+- The `ViewTransition` class along with:
+  - Its Promises _(`updateCallbackDone`, `ready`, and `finished`)_
+  - `ViewTransition.transitionRoot`
+- `document.activeViewTransition`
+- View Transition Types
 
-Once [registered](#usage), you can stop cluttering your codebase with `if (document.startViewTransition)` guards. Instead, write clean, spec-compliant View Transition logic that runs anywhere — even in browsers without native support.
+Not polyfilled are:
+
+- The Pseudo Tree
+- The CSS Properties and Selectors
+- The animations
+
+This allows you to safely trigger Same-Document View Transitions, handle promises, and manage View Transition Types as if the browser natively supported them – ergo the _mock_ in `view-transitions-mock`. The only difference with a native implementation is that you don’t get to see any visual View Transition happening.
+
+Once [registered](#usage), you can stop cluttering your codebase with `if (document.startViewTransition)` guards. Instead, write View Transitions code that runs anywhere — even in browsers without native support.
 
 - Without `view-transitions-mock`:
 
     ```javascript
     document.querySelector('button').addEventListener('click', async () => {
+
       if (document.startViewTransition && ("types" in ViewTransition?.prototype)) {
         document.querySelector('#thing').style.viewTransitionName = 'the-thing';
+
         const t = document.startViewTransition({
           update: updateTheDOM,
           types: ['slide', 'from-left']
         });
+
         await t.finished;
         document.querySelector('#thing').style.viewTransitionName = '';
       } else {
@@ -36,10 +52,12 @@ Once [registered](#usage), you can stop cluttering your codebase with `if (docum
     // The code below works in _any_ browser, including those without Same-Document View Transitions or View Transition Types support.
     document.querySelector('button').addEventListener('click', async () => {
       document.querySelector('#thing').style.viewTransitionName = 'the-thing';
+
       const t = document.startViewTransition({
         update: updateTheDOM,
         types: ['slide', 'from-left']
       });
+
       await t.finished;
       document.querySelector('#thing').style.viewTransitionName = '';
     });
