@@ -2,6 +2,8 @@
 
 A non-visual polyfill for Same-Document View Transitions.
 
+![View Transitions Mock](https://github.com/GoogleChromeLabs/view-transitions-mock/raw/main/assets/view-transitions-mock.jpg?raw=true)
+
 ## Not a polyfill. Or is it?
 
 `view-transitions-mock` a [spec-compliant](#tests) JavaScript implementation of Same-Document View Transitions, but without the animation bits. It polyfills the full JavaScript API surface of Same-Document View Transitions, including:

@@ -8,3 +8,4 @@
 # Other files
 .gitignore
 tsconfig.json
+/assets
