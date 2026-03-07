@@ -127,7 +127,7 @@ View Transitions Mock is tested with Playwright. It is tested in the following b
 
 ## Contributing
 
-We'd love to accept your patches and contributions to this project. See the enclosed [`CONTRIBUTING`](./CONTRIBUTING) for details.
+We'd love to accept your patches and contributions to this project. See the enclosed [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details.
 
 ## Disclaimer
 
