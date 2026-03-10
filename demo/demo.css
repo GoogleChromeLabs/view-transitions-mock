@@ -6,10 +6,15 @@
 @layer reset, ui, demo;
 
 @layer demo {
+  .box-container {
+    display: grid;
+    place-content: center;
+    flex-grow: 1;
+  }
   .box {
     aspect-ratio: 1;
     inline-size: 20vmin;
-    background: blue;
+    background: var(--primary-color, blue);
 		color: white;
 		overflow: hidden;
 		
@@ -29,17 +34,143 @@
 }
 
 @layer ui {
+
+	:root {
+		--primary-color: #007bff;
+		--primary-color-dark: #0056b3;
+		--light-grey: #f8f9fa;
+		--dark-grey: #343a40;
+		--border-color: #dee2e6;
+		--text-color: #212529;
+		--text-color-light: #f8f9fa;
+		--text-color-notsolight: #cacdd0;
+	}
+
 	#controls {
-		position: fixed;
-		top: 0em;
-		right: 0em;
-		background-color: white;
-		padding: 0.5em;
+		padding: 1em;
 		display: flex;
-		flex-direction: row;
+		flex-wrap: wrap;
 		gap: 1em;
 		z-index: 1;
+		border-top: 1px solid var(--border-color);
+		justify-content: center;
+		align-self: stretch;
 	}
+
+	button {
+		background-color: var(--primary-color);
+		color: white;
+		border: none;
+		padding: 0.75em 1.5em;
+		border-radius: 0.5em;
+		font-family: inherit;
+		cursor: pointer;
+		transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+	}
+
+	button:hover {
+		background-color: var(--primary-color-dark);
+	}
+
+	button:active {
+		transform: scale(0.98);
+	}
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+		font-family: system-ui, sans-serif;
+		color: var(--text-color);
+  }
+
+  main {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+		padding: 1em;
+		background: #fff;
+		gap: 1em;
+  }
+
+  aside {
+    width: 100%;
+    height: 40%;
+		border-top: 1px solid var(--border-color);
+		background-color: var(--light-grey);
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  @media (min-width: 1000px) {
+    body {
+      flex-direction: row;
+    }
+    main {
+      width: 50%;
+      height: 100%;
+    }
+    aside {
+      width: 50%;
+      height: 100%;
+      border-top: none;
+      border-left: 1px solid var(--border-color);
+    }
+  }
+
+  @media (min-width: 1600px) {
+    main {
+      width: 67%;
+    }
+    aside {
+      width: 33%;
+    }
+  }
+
+  #log {
+    padding: 1em;
+    margin: 0;
+    list-style-position: inside;
+		background-color: var(--dark-grey);
+		color: var(--text-color-light);
+		font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+		border-radius: 0.5em;
+		margin: 1em;
+    
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+    scrollbar-color: var(--text-color-light) var(--dark-grey);
+  }
+
+  #log li {
+    padding: 0.75em 1em;
+    border-bottom: 1px solid #495057;
+    white-space: pre-wrap;
+
+    &::first-line {
+      font-size: 0.75em;
+      color: var(--text-color-notsolight);
+    }
+  }
+
+  #log li:last-child {
+	  border-bottom: none;
+  }
+
+  /* @ref https://drafts.csswg.org/css-scroll-snap-1/#example-d0a2d86f */
+  #log {
+      scroll-snap-type: y proximity;
+      align-content: end;
+  }
+  #log::after {
+      display: block;
+      content: "";
+      scroll-snap-align: end;
+  }
 }
 
 @layer reset {
@@ -52,11 +183,15 @@
 		padding: 0;
 		height: 100%;
 	}
-  
-  body {
-    display: grid;
-    place-content: center;
-		padding: 1em;
+
+  ul[class], ol[class], ul[id], ol[id] {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ::view-transition {
+    pointer-events: none;
   }
   
   html {

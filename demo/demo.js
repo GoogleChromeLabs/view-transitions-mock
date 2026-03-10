@@ -50,8 +50,10 @@ const randomString = (length) => {
 };
 
 const mutate = () => {
-  const curAlignContent = document.body.style.alignContent,
-    curJustifyContent = document.body.style.justifyContent;
+  const curAlignContent =
+      document.querySelector(".box-container").style.alignContent,
+    curJustifyContent =
+      document.querySelector(".box-container").style.justifyContent;
   let newAlignContent, newJustifyContent;
   do {
     newAlignContent = positions[randomInt(3)];
@@ -60,8 +62,9 @@ const mutate = () => {
     newAlignContent === curAlignContent &&
     newJustifyContent === curJustifyContent
   );
-  document.body.style.alignContent = newAlignContent;
-  document.body.style.justifyContent = newJustifyContent;
+  document.querySelector(".box-container").style.alignContent = newAlignContent;
+  document.querySelector(".box-container").style.justifyContent =
+    newJustifyContent;
 
   // document.querySelector('.box').style.aspectRatio = 1 + getRandomInt(2);
   // document.querySelector('.box').style.borderRadius = `${getRandomInt(50)}px`;
@@ -72,42 +75,34 @@ const mutate = () => {
   document.querySelector(".box span").innerText = randomString(randomInt(250));
 };
 
-document.body.addEventListener("click", async (e) => {
-  // If the click is inside the #controls element, don't trigger a transition.
-  if (e.composedPath().includes(document.getElementById("controls"))) {
-    return;
-  }
+document
+  .querySelector(".box-container")
+  .addEventListener("click", async (e) => {
+    console.log("startViewTransition");
+    const t = document.startViewTransition(mutate);
+    // t.skipTransition();
 
-  console.log("=== startViewTransition");
-  const t = document.startViewTransition(mutate);
-  // t.skipTransition();
+    t.updateCallbackDone
+      .then(() => {
+        console.log("updateCallbackDone");
+      })
+      .catch((e) => {
+        console.log("updateCallbackDone ERROR");
+      });
 
-  console.log(document.activeViewTransition);
+    t.ready
+      .then(() => {
+        console.log("ready");
+      })
+      .catch((e) => {
+        console.log("ready ERROR");
+      });
 
-  t.updateCallbackDone
-    .then(() => {
-      console.log("=== updateCallbackDone");
-      console.log(document.activeViewTransition);
-    })
-    .catch((e) => {
-      console.log("updateCallbackDone ERROR");
-    });
-
-  t.ready
-    .then(() => {
-      console.log("=== ready");
-      console.log(document.activeViewTransition);
-    })
-    .catch((e) => {
-      console.log("ready ERROR");
-    });
-
-  t.finished
-    .then(() => {
-      console.log("=== finished");
-      console.log(document.activeViewTransition);
-    })
-    .catch((e) => {
-      console.log("finished ERROR");
-    });
-});
+    t.finished
+      .then(() => {
+        console.log("finished");
+      })
+      .catch((e) => {
+        console.log("finished ERROR");
+      });
+  });

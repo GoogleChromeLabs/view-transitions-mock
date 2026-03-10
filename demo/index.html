@@ -11,14 +11,22 @@
   <title>View Transitions Mock Demo</title>
 
   <link rel="stylesheet" href="demo.css">
+  <script src="console.js"></script>
   <script type="module" src="demo.js"></script>
+
+  <script type="module">
+    console.log('Welcome to the view-transitions-mock demo. Click the pane to start a View Transition, and output will be logged here.');
+    console.log('Use one of the buttons to register the mock, or unregister it.');
+    console.log('TIP: In a browser with native View Transitions support, hit the “Register (forced: true)” button');
+  </script>
 
   <script type="module">
     import { register, unregister } from "./view-transitions-mock.js";
     
     document.getElementById('register-auto').addEventListener('click', e => {
       e.preventDefault();
-      register();
+      const registered = register();
+      console.log
     });
     
     document.getElementById('register-norequiretypes').addEventListener('click', e => {
@@ -38,14 +46,21 @@
   </script>
 </head>
 <body>
-  <div id="controls">
-    <button id="register-auto">Register Mock (Default)</button>
-    <button id="register-norequiretypes">Register Mock (requireTypes: false)</button>
-    <button id="register-forced">Register Mock (forced: true)</button>
-    <button id="unregister">Unregister Mock</button>
-  </div>
-  <div class="box">
-    <span>ViewTransitions Mock<br>Click to trigger</span>
-  </div>
+  <main>
+    <div class="box-container">
+      <div class="box">
+        <span>ViewTransitions Mock<br>Click to trigger</span>
+      </div>
+    </div>
+    <div id="controls">
+      <button id="register-auto">Register Mock (Default)</button>
+      <button id="register-norequiretypes">Register Mock (requireTypes: false)</button>
+      <button id="register-forced">Register Mock (forced: true)</button>
+      <button id="unregister">Unregister Mock</button>
+    </div>
+  </main>
+  <aside>
+    <ol id="log"></ol>
+  </aside>
 </body>
 </html>
