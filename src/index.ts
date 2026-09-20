@@ -27,13 +27,13 @@ const defaultRegistrationTrigger = {
   forced: false,
 };
 
-const register = (
-  registrationTrigger: RegistrationTrigger = defaultRegistrationTrigger,
-): void => {
+const register = (registrationTrigger: RegistrationTrigger = {}): void => {
   if (registered) return;
 
-  const requireTypesSupport = registrationTrigger.requireTypes;
-  const forceRegister = registrationTrigger.forced;
+  const { requireTypes: requireTypesSupport, forced: forceRegister } = {
+    ...defaultRegistrationTrigger,
+    ...registrationTrigger,
+  };
 
   const hasSameDocumentViewTransitionsSupport = !!document.startViewTransition;
   const hasViewTransitionTypesSupport =

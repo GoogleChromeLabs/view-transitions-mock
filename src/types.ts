@@ -46,8 +46,8 @@ const possibleViewTransitionPhases: ViewTransitionPhase[] = [
 ];
 
 type RegistrationTrigger = {
-  requireTypes: boolean;
-  forced: boolean;
+  requireTypes?: boolean;
+  forced?: boolean;
 };
 
 export {
