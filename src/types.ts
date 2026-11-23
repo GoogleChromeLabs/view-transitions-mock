@@ -12,6 +12,19 @@ declare global {
         | StartViewTransitionOptions,
     ): ViewTransition;
   }
+
+  interface Element {
+    activeViewTransition: ViewTransition | null;
+    startViewTransition(
+      callbackOptions?:
+        | ViewTransitionUpdateCallback
+        | StartViewTransitionOptions,
+    ): ViewTransition;
+  }
+
+  interface ViewTransition {
+    readonly transitionRoot: Element | null;
+  }
 }
 
 interface ViewTransition {
@@ -19,13 +32,14 @@ interface ViewTransition {
   readonly ready: Promise<void>;
   readonly updateCallbackDone: Promise<void>;
   readonly types: ViewTransitionTypeSet;
+  readonly transitionRoot: Element | null;
   skipTransition(): void;
 }
 
 type ViewTransitionUpdateCallback = () => void | Promise<void>;
 
 interface StartViewTransitionOptions {
-  update: ViewTransitionUpdateCallback | null;
+  update?: ViewTransitionUpdateCallback | null;
   types?: string[] | null;
 }
 
@@ -46,8 +60,9 @@ const possibleViewTransitionPhases: ViewTransitionPhase[] = [
 ];
 
 type RegistrationTrigger = {
-  requireTypes: boolean;
-  forced: boolean;
+  requireTypes?: boolean;
+  requireScoped?: boolean;
+  forced?: boolean;
 };
 
 export {

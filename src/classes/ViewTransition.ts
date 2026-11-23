@@ -59,7 +59,7 @@ class ViewTransition implements ViewTransitionInterface {
   }
 
   // @ref https://drafts.csswg.org/css-view-transitions-1/#dom-viewtransition-skiptransition
-  skipTransition = (): undefined => {
+  skipTransition(): undefined {
     // 1. If this’s phase is not "done", then skip the view transition for this with an "AbortError" DOMException.
     if (this.#phase !== "done") {
       skipTheViewTransition(
@@ -72,7 +72,7 @@ class ViewTransition implements ViewTransitionInterface {
     }
 
     return undefined;
-  };
+  }
 
   // @TODO: The spec defines this as Promise<undefined>
   get updateCallbackDone(): WatchablePromise<void> {
@@ -89,8 +89,11 @@ class ViewTransition implements ViewTransitionInterface {
     return this.#finished;
   }
 
-  set types(types: Set<string>) {
-    this.#types = types;
+  set types(types: Iterable<string>) {
+    this.#types.clear();
+    for (const type of types) {
+      this.#types.add(String(type));
+    }
   }
 
   get types(): ViewTransitionTypeSet {
@@ -120,11 +123,11 @@ class ViewTransition implements ViewTransitionInterface {
   }
 
   // @TODO: This should not be exposed
-  set transitionRoot(root: Element | Document) {
+  set transitionRoot(root: Element | Document | null) {
     if (root === window.document) {
       this.#transitionRoot = window.document.documentElement;
     } else {
-      this.#transitionRoot = root as Element;
+      this.#transitionRoot = root as Element | null;
     }
   }
 

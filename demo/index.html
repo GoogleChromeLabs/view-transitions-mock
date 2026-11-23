@@ -33,6 +33,11 @@
       e.preventDefault();
       register({ requireTypes: false });
     });
+
+    document.getElementById('register-norequirescoped').addEventListener('click', e => {
+      e.preventDefault();
+      register({ requireScoped: false });
+    });
     
     document.getElementById('register-forced').addEventListener('click', e => {
       e.preventDefault();
@@ -55,6 +60,7 @@
     <div id="controls">
       <button id="register-auto">Register Mock (Default)</button>
       <button id="register-norequiretypes">Register Mock (requireTypes: false)</button>
+      <button id="register-norequirescoped">Register Mock (requireScoped: false)</button>
       <button id="register-forced">Register Mock (forced: true)</button>
       <button id="unregister">Unregister Mock</button>
     </div>

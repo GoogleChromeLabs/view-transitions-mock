@@ -9,10 +9,12 @@ A non-visual polyfill for Same-Document View Transitions.
 `view-transitions-mock` a [spec-compliant](#tests) JavaScript implementation of Same-Document View Transitions, but without the animation bits. It polyfills the full JavaScript API surface of Same-Document View Transitions, including:
 
 - `document.startViewTransition()`
+- `Element.prototype.startViewTransition()` _(Element-Scoped View Transitions, including concurrent and enclosing transitions)_
 - The `ViewTransition` class along with:
   - Its Promises _(`updateCallbackDone`, `ready`, and `finished`)_
   - `ViewTransition.transitionRoot`
 - `document.activeViewTransition`
+- `Element.prototype.activeViewTransition`
 - View Transition Types
 
 Not polyfilled are:
@@ -21,9 +23,9 @@ Not polyfilled are:
 - The CSS Properties and Selectors
 - The animations
 
-This allows you to safely trigger Same-Document View Transitions, handle promises, and manage View Transition Types as if the browser natively supported them – ergo the _mock_ in `view-transitions-mock`. The only difference with a native implementation is that you don’t get to see any visual View Transition happening.
+This allows you to safely trigger Same-Document View Transitions (both document-scoped and element-scoped), handle promises, and manage View Transition Types as if the browser natively supported them – ergo the _mock_ in `view-transitions-mock`. The only difference with a native implementation is that you don’t get to see any visual View Transition happening.
 
-Once [registered](#usage), you can stop cluttering your codebase with `if (document.startViewTransition)` guards. Instead, write View Transitions code that runs anywhere — even in browsers without native support.
+Once [registered](#usage), you can stop cluttering your codebase with `if (document.startViewTransition)` or `if ("startViewTransition" in Element.prototype)` guards. Instead, write View Transitions code that runs anywhere — even in browsers without native support.
 
 - Without `view-transitions-mock`:
 
@@ -73,7 +75,7 @@ npm i view-transitions-mock
 
 ## Usage
 
-1. Import and register the mock before you make a call to `document.startViewTranstion`. For example:
+1. Import and register the mock before you make a call to `document.startViewTransition` or `element.startViewTransition`. For example:
 
     ```html
     <script type="module">
@@ -86,18 +88,30 @@ npm i view-transitions-mock
 
 ## Registration Configuration
 
-By default, the registation of `view-transitions-mock` checks whether `document.startViewTransition` and View Transition Types are supported or not. When both are natively supported, it won’t register the mock.
+By default, the registration of `view-transitions-mock` checks for native support of `document.startViewTransition`, View Transition Types, and `Element.prototype.startViewTransition` (Element-Scoped View Transitions). Registration is granular:
+
+- When all required features are natively supported, nothing is mocked.
+- When `document.startViewTransition` (and View Transition Types, if required) are natively supported, but `Element.prototype.startViewTransition` is not, native document-scoped transitions remain intact and only `Element.prototype.startViewTransition` / `Element.prototype.activeViewTransition` are mocked.
+- When `document.startViewTransition` (or View Transition Types, if required) are not natively supported, the full Same-Document View Transitions mock is registered.
 
 You can tweak the registration by passing an object with the following properties into the `register` function:
 
 - `requireTypes` _(`Boolean`, default value: `true`)_: Require support for View Transition Types.
-- `forced` _(`Boolean`, default value: `false`)_: Force register the mock, regardless of support.
+- `requireScoped` _(`Boolean`, default value: `true`)_: Require support for Element-Scoped View Transitions (`Element.prototype.startViewTransition`).
+- `forced` _(`Boolean`, default value: `false`)_: Force register the full mock (both document-scoped and element-scoped), regardless of support.
 
-For example, if you are not relying on View Transition Types, call `register` as follows so that it does not register the mock in Firefox 144–146 (which does not have support for View Transition Types):
+For example, if you are not relying on View Transition Types, call `register` as follows so that native document-scoped transitions are kept in Firefox 144–146 (which does not have support for View Transition Types):
 
 ```javascript
 import { register } from "view-transitions-mock";
 register({ requireTypes: false });
+```
+
+If you are not relying on Element-Scoped View Transitions and don’t want `Element.prototype` mocked when missing, call `register` as follows:
+
+```javascript
+import { register } from "view-transitions-mock";
+register({ requireScoped: false });
 ```
 
 Or if you want to disable native support for Same-Document View Transitions entirely – handy if you want to test how your site looks without View Transitions – call `register` as follows:
