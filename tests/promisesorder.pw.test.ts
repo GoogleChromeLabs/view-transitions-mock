@@ -220,4 +220,181 @@ test.describe("Promises Order", () => {
     const mockedResult = await page.evaluate(startVTAndReturnLoggedMessages);
     expect(mockedResult).toEqual(expectedResult);
   });
+
+  test("It should reject ready before running the callback when skipped immediately", async ({
+    page,
+  }, testInfo) => {
+    const startVTAndReturnLoggedMessages = async () => {
+      const order: string[] = [];
+      const transition = (window as any).startAndWatchViewTransition(
+        order,
+        () => {
+          order.push("callback");
+        },
+      );
+      transition.skipTransition();
+
+      await transition.finished;
+      return order;
+    };
+
+    const expectedResult = [
+      "readyCatch",
+      "callback",
+      "updateCallbackDone",
+      "finished",
+    ];
+
+    // Native result
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
+      expect(nativeResult).toEqual(expectedResult);
+    }
+
+    // Force register the mock
+    await page.evaluate(() => {
+      (window as any).register({ forced: true });
+    });
+
+    // Mocked result
+    const mockedResult = await page.evaluate(startVTAndReturnLoggedMessages);
+    expect(mockedResult).toEqual(expectedResult);
+  });
+
+  test("It should order callbacks and promises accurately on double startViewTransition", async ({
+    page,
+  }, testInfo) => {
+    const startDoubleVTAndReturnLoggedMessages = async () => {
+      const order: string[] = [];
+      const vt1 = document.startViewTransition(() => {
+        order.push("callback1");
+      });
+      vt1.updateCallbackDone
+        .then(() => order.push("updateCallbackDone1"))
+        .catch(() => order.push("updateCallbackDone1Catch"));
+      vt1.ready
+        .then(() => order.push("ready1"))
+        .catch(() => order.push("ready1Catch"));
+      vt1.finished
+        .then(() => order.push("finished1"))
+        .catch(() => order.push("finished1Catch"));
+
+      const vt2 = document.startViewTransition(() => {
+        order.push("callback2");
+      });
+      vt2.updateCallbackDone
+        .then(() => order.push("updateCallbackDone2"))
+        .catch(() => order.push("updateCallbackDone2Catch"));
+      vt2.ready
+        .then(() => order.push("ready2"))
+        .catch(() => order.push("ready2Catch"));
+      vt2.finished
+        .then(() => order.push("finished2"))
+        .catch(() => order.push("finished2Catch"));
+
+      await Promise.all([vt1.finished, vt2.finished]);
+      return order;
+    };
+
+    const expectedResult = [
+      "ready1Catch",
+      "callback1",
+      "updateCallbackDone1",
+      "finished1",
+      "callback2",
+      "updateCallbackDone2",
+      "ready2",
+      "finished2",
+    ];
+
+    // Native result
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(
+        startDoubleVTAndReturnLoggedMessages,
+      );
+      expect(nativeResult).toEqual(expectedResult);
+    }
+
+    // Force register the mock
+    await page.evaluate(() => {
+      (window as any).register({ forced: true });
+    });
+
+    // Mocked result
+    const mockedResult = await page.evaluate(
+      startDoubleVTAndReturnLoggedMessages,
+    );
+    expect(mockedResult).toEqual(expectedResult);
+  });
+
+  test("It should order callbacks and promises accurately on triple startViewTransition", async ({
+    page,
+  }, testInfo) => {
+    const startTripleVTAndReturnLoggedMessages = async () => {
+      const order: string[] = [];
+      const attach = (vt: ViewTransition, n: number) => {
+        vt.updateCallbackDone
+          .then(() => order.push(`updateCallbackDone${n}`))
+          .catch(() => order.push(`updateCallbackDone${n}Catch`));
+        vt.ready
+          .then(() => order.push(`ready${n}`))
+          .catch(() => order.push(`ready${n}Catch`));
+        vt.finished
+          .then(() => order.push(`finished${n}`))
+          .catch(() => order.push(`finished${n}Catch`));
+      };
+
+      const vt1 = document.startViewTransition(() => {
+        order.push("callback1");
+      });
+      attach(vt1, 1);
+
+      const vt2 = document.startViewTransition(() => {
+        order.push("callback2");
+      });
+      attach(vt2, 2);
+
+      const vt3 = document.startViewTransition(() => {
+        order.push("callback3");
+      });
+      attach(vt3, 3);
+
+      await Promise.all([vt1.finished, vt2.finished, vt3.finished]);
+      return order;
+    };
+
+    const expectedResult = [
+      "ready1Catch",
+      "ready2Catch",
+      "callback1",
+      "updateCallbackDone1",
+      "finished1",
+      "callback2",
+      "updateCallbackDone2",
+      "finished2",
+      "callback3",
+      "updateCallbackDone3",
+      "ready3",
+      "finished3",
+    ];
+
+    // Native result
+    if (!testInfo.project.name.endsWith("-nosupport")) {
+      const nativeResult = await page.evaluate(
+        startTripleVTAndReturnLoggedMessages,
+      );
+      expect(nativeResult).toEqual(expectedResult);
+    }
+
+    // Force register the mock
+    await page.evaluate(() => {
+      (window as any).register({ forced: true });
+    });
+
+    // Mocked result
+    const mockedResult = await page.evaluate(
+      startTripleVTAndReturnLoggedMessages,
+    );
+    expect(mockedResult).toEqual(expectedResult);
+  });
 });

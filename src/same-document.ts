@@ -30,10 +30,49 @@ let updateCallbackQueue: ViewTransition[] = [];
 
 let renderingSuppression = false;
 
-// Scheduling flags to avoid duplicate microtask / rAF loops
+// Scheduling flags to avoid duplicate task / rAF loops
 let pendingSetupScheduled = false;
 let flushQueueScheduled = false;
 let rafScheduled = false;
+
+// Queue a macrotask (simulating the DOM manipulation task source) so all pending
+// microtasks (including multi-hop promise reactions like .then().catch()) drain first,
+// without setTimeout’s 4ms nested-timer clamping. Each invocation drains one task per turn
+// so a microtask checkpoint runs between queued tasks, matching browser event loop semantics.
+const macrotaskQueue: (() => void)[] = [];
+let macrotaskChannel: MessageChannel | null = null;
+let macrotaskDrainScheduled = false;
+
+const scheduleMacrotaskDrain = () => {
+  if (macrotaskDrainScheduled) return;
+  macrotaskDrainScheduled = true;
+
+  if (typeof MessageChannel !== "undefined") {
+    if (!macrotaskChannel) {
+      macrotaskChannel = new MessageChannel();
+      macrotaskChannel.port1.onmessage = drainMacrotaskQueue;
+    }
+    macrotaskChannel.port2.postMessage(null);
+  } else {
+    window.setTimeout(drainMacrotaskQueue, 0);
+  }
+};
+
+const drainMacrotaskQueue = () => {
+  macrotaskDrainScheduled = false;
+  const next = macrotaskQueue.shift();
+  if (macrotaskQueue.length > 0) {
+    scheduleMacrotaskDrain();
+  }
+  if (next) {
+    next();
+  }
+};
+
+const queueTask = (callback: () => void) => {
+  macrotaskQueue.push(callback);
+  scheduleMacrotaskDrain();
+};
 
 // Tracks whether document.startViewTransition is mocked (vs native)
 let documentMocked = false;
@@ -285,7 +324,7 @@ const schedulePendingSetup = () => {
   if (pendingSetupScheduled) return;
   pendingSetupScheduled = true;
 
-  window.queueMicrotask(() => {
+  queueTask(() => {
     pendingSetupScheduled = false;
     performPendingSetup();
   });
@@ -354,39 +393,34 @@ const setupViewTransition = (transition: ViewTransition) => {
   // @NOTIMPLEMENTED
 
   // 2. Flush the update callback queue.
-  flushTheUpdateCallbackQueue();
-
-  // Abort if flushing a previous update callback skipped or finished this transition.
-  if (transition.phase === "done") return;
-
-  // 3. Capture the old state for transition.
-  // Verify the root element has a rendered principal box qualifying for layout containment.
-  if (!canHostViewTransition(transition.transitionRoot)) {
-    skipTheViewTransition(
-      transition,
-      new DOMException(
-        "Skipped ViewTransition because root element does not qualify for layout containment",
-        "InvalidStateError",
-      ),
-    );
-    return;
-  }
-
-  // 4. Set document’s rendering suppression for view transitions to true.
-  renderingSuppression = true;
-
-  // 5. Queue a global task on the DOM manipulation task source, given transition’s relevant global object,
-  // to perform the following steps:
-  window.queueMicrotask(() => {
-    // 5.1. If transition’s phase is "done", then abort these steps.
+  // Continue steps 3-5 once any previously queued update callbacks (and their microtask
+  // checkpoints) have drained, while staying inside the current macrotask turn.
+  flushTheUpdateCallbackQueue(() => {
+    // Abort if flushing a previous update callback skipped or finished this transition.
     if (transition.phase === "done") return;
 
-    // 5.2. Schedule the update callback for transition.
+    // 3. Capture the old state for transition.
+    // Verify the root element has a rendered principal box qualifying for layout containment.
+    if (!canHostViewTransition(transition.transitionRoot)) {
+      skipTheViewTransition(
+        transition,
+        new DOMException(
+          "Skipped ViewTransition because root element does not qualify for layout containment",
+          "InvalidStateError",
+        ),
+      );
+      return;
+    }
+
+    // 4. Set document’s rendering suppression for view transitions to true.
+    renderingSuppression = true;
+
+    // 5. Schedule and flush this transition’s update callback.
+    // 5.1. Schedule the update callback for transition.
     scheduleTheUpdateCallback(transition);
 
-    // 5.3. Flush the update callback queue.
-    // @NOTIMPLEMENTED – As per https://github.com/w3c/csswg-drafts/issues/11987,
-    // scheduleTheUpdateCallback queues flushing the update callback queue.
+    // 5.2. Flush the update callback queue.
+    flushTheUpdateCallbackQueue();
   });
 };
 
@@ -401,15 +435,11 @@ const scheduleTheUpdateCallback = (transition: ViewTransition) => {
 
   // 2. Queue a global task on the DOM manipulation task source, given transition’s relevant global object,
   // to flush the update callback queue.
-  // Deferring by one extra microtask ensures microtasks queued synchronously during skipTheViewTransition
-  // (such as transition.ready rejection handlers) run before the update callback begins.
   if (!flushQueueScheduled) {
     flushQueueScheduled = true;
-    window.queueMicrotask(() => {
-      window.queueMicrotask(() => {
-        flushQueueScheduled = false;
-        flushTheUpdateCallbackQueue();
-      });
+    queueTask(() => {
+      flushQueueScheduled = false;
+      flushTheUpdateCallbackQueue();
     });
   }
 };
@@ -470,16 +500,54 @@ const skipTheViewTransition = (
   );
 };
 
-// @ref https://drafts.csswg.org/css-view-transitions-2/#flush-the-update-callback-queue
-const flushTheUpdateCallbackQueue = () => {
-  // Snapshot and clear queue before iterating so re-entrant or concurrent calls
-  // never invoke a transition’s update callback twice.
-  const queue = updateCallbackQueue;
-  updateCallbackQueue = [];
+let flushingUpdateCallbackQueue = false;
+const flushCompleteCallbacks: (() => void)[] = [];
 
-  // 1. For each transition in document’s update callback queue, call the update callback given transition.
-  for (const transition of queue) {
-    callTheUpdateCallback(transition);
+const yieldMicrotasks = (count: number, callback: () => void) => {
+  if (count <= 0) {
+    callback();
+    return;
+  }
+  window.queueMicrotask(() => yieldMicrotasks(count - 1, callback));
+};
+
+const drainUpdateCallbackQueue = () => {
+  const transition = updateCallbackQueue.shift();
+  if (!transition) {
+    flushingUpdateCallbackQueue = false;
+    while (flushCompleteCallbacks.length > 0) {
+      const waiter = flushCompleteCallbacks.shift()!;
+      waiter();
+      if (flushingUpdateCallbackQueue) {
+        return;
+      }
+    }
+    return;
+  }
+
+  // 1. Call the update callback given transition.
+  callTheUpdateCallback(transition);
+
+  // Yield microtasks to simulate the microtask checkpoint browsers perform after
+  // invoking each WebIDL callback, so updateCallbackDone and finished reactions settle
+  // before the next queued callback or setup step runs (while staying in the same task).
+  yieldMicrotasks(4, drainUpdateCallbackQueue);
+};
+
+// @ref https://drafts.csswg.org/css-view-transitions-2/#flush-the-update-callback-queue
+const flushTheUpdateCallbackQueue = (onDone?: () => void): void => {
+  if (updateCallbackQueue.length === 0 && !flushingUpdateCallbackQueue) {
+    onDone?.();
+    return;
+  }
+
+  if (onDone) {
+    flushCompleteCallbacks.push(onDone);
+  }
+
+  if (!flushingUpdateCallbackQueue) {
+    flushingUpdateCallbackQueue = true;
+    drainUpdateCallbackQueue();
   }
 };
 

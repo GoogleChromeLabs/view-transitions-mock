@@ -498,19 +498,31 @@ test.describe("Nested / Enclosing View Transitions", () => {
       outer.appendChild(inner);
       document.body.appendChild(outer);
 
-      // Case 1: inner is animating (ready resolved), then outer starts
+      // Case 1: inner is animating (ready resolved), then outer starts without skipping inner
       const tInner1 = inner.startViewTransition(() => {});
       await tInner1.ready;
 
       const tOuter1 = outer.startViewTransition(() => {});
-      await tOuter1.ready;
-
-      const bothActiveWhileAnimating =
+      const innerStillActiveWhenOuterStarts =
         inner.activeViewTransition === tInner1 &&
         outer.activeViewTransition === tOuter1 &&
         document.activeViewTransition === null;
 
+      await tOuter1.ready;
       await Promise.all([tInner1.finished, tOuter1.finished]);
+
+      // Case 1b: inner and outer both reach animating state in the same frame
+      const tInner1b = inner.startViewTransition(() => {});
+      const tOuter1b = outer.startViewTransition(() => {});
+      await Promise.all([tInner1b.ready, tOuter1b.ready]);
+
+      const bothActiveWhileAnimating =
+        innerStillActiveWhenOuterStarts &&
+        inner.activeViewTransition === tInner1b &&
+        outer.activeViewTransition === tOuter1b &&
+        document.activeViewTransition === null;
+
+      await Promise.all([tInner1b.finished, tOuter1b.finished]);
 
       // Case 2: inner is awaiting an async callback, outer runs to completion while inner is still running
       let resolveInner!: () => void;
@@ -571,16 +583,16 @@ test.describe("Nested / Enclosing View Transitions", () => {
       document.body.appendChild(outer);
 
       const tInner = inner.startViewTransition(() => {});
-      await tInner.ready;
-
       const tMiddle = middle.startViewTransition(() => {});
-      await tMiddle.ready;
-
       const tOuter = outer.startViewTransition(() => {});
-      await tOuter.ready;
-
       const tDoc = document.startViewTransition(() => {});
-      await tDoc.ready;
+
+      await Promise.all([
+        tInner.ready,
+        tMiddle.ready,
+        tOuter.ready,
+        tDoc.ready,
+      ]);
 
       const allFourActiveSimultaneously =
         inner.activeViewTransition === tInner &&
