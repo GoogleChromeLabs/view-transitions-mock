@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2026 Google LLC
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document-Scoped View Transitions - View Transitions Mock</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <script>
+      const savedTheme = localStorage.getItem("theme") || "system";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+  </head>
+  <body class="shell-container">
+    <div class="shell-main">
+      <div class="shell-frame">
+        <div class="shell-nav-bar">
+          <button id="nav-back" title="Back">&larr;</button>
+          <button id="nav-forward" title="Forward">&rarr;</button>
+          <button id="nav-reload" title="Reload">&#x21BB;</button>
+          <div class="shell-url-bar">
+            <span id="nav-url">/document-scoped</span>
+          </div>
+        </div>
+        <iframe
+          id="demo-iframe"
+          src="demo.html"
+          title="Document-Scoped View Transitions Demo"
+        ></iframe>
+      </div>
+    </div>
+
+    <footer class="shell-footer mobile-only">
+      <p>
+        <code>view-transitions-mock</code> is a Chrome DevRel Project.<br />
+        Source Code available
+        <a href="https://github.com/GoogleChromeLabs/view-transitions-mock"
+          >on GitHub</a
+        >
+        –
+        <a href="https://www.apache.org/licenses/LICENSE-2.0.txt"
+          >Apache License, Version 2.0</a
+        >
+      </p>
+    </footer>
+
+    <aside class="shell-sidebar">
+      <div class="shell-header">
+        <a href="../" class="shell-back"><span>&larr;</span> Back</a>
+        <div class="theme-switcher" role="group" aria-label="Theme switcher">
+          <button class="theme-btn" data-mode="light" aria-label="Light Theme">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              width="16"
+              height="16"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          </button>
+          <button
+            class="theme-btn"
+            data-mode="system"
+            aria-label="System Theme"
+          >
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              width="16"
+              height="16"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.75 17L9 20h6l-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </button>
+          <button class="theme-btn" data-mode="dark" aria-label="Dark Theme">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              width="16"
+              height="16"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="shell-explanation">
+        <h2>Document-Scoped View Transitions</h2>
+        <p>
+          This demo calls
+          <code>document.startViewTransition({ update, types })</code> to morph
+          the card layout. Use the controls below to compare native vs. mocked
+          execution, or click <strong>Start &amp; Skip</strong> to verify
+          promise ordering when <code>skipTransition()</code> is called.
+        </p>
+
+        <hr />
+
+        <h3>Mock Controls</h3>
+        <div class="support-list" aria-live="polite">
+          <span class="support-item">
+            <code>document</code>
+            <span id="status-doc" class="support-state" data-state="unsupported"
+              >…</span
+            >
+          </span>
+          <span class="support-item">
+            <code>types</code>
+            <span
+              id="status-types"
+              class="support-state"
+              data-state="unsupported"
+              >…</span
+            >
+          </span>
+          <span class="support-item">
+            <code>Element</code>
+            <span
+              id="status-scoped"
+              class="support-state"
+              data-state="unsupported"
+              >…</span
+            >
+          </span>
+        </div>
+
+        <div class="mock-controls">
+          <button id="register-auto" class="mock-btn" data-preset="auto">
+            register()
+          </button>
+          <button
+            id="register-norequiretypes"
+            class="mock-btn"
+            data-preset="no-types"
+          >
+            requireTypes: false
+          </button>
+          <button
+            id="register-norequirescoped"
+            class="mock-btn"
+            data-preset="no-scoped"
+          >
+            requireScoped: false
+          </button>
+          <button id="register-forced" class="mock-btn" data-preset="forced">
+            forced: true
+          </button>
+          <button id="unregister" class="mock-btn mock-btn-unregister">
+            unregister()
+          </button>
+        </div>
+
+        <hr />
+
+        <div class="log-section-header">
+          <h3>Console Log</h3>
+          <button id="clear-log" class="log-clear-btn">Clear</button>
+        </div>
+        <ol id="log" class="sidebar-log" aria-live="polite"></ol>
+
+        <hr />
+
+        <h3>The Code</h3>
+        <pre><code>const t = document.startViewTransition({
+  update: () => shuffleCards(grid),
+  types: ["shuffle"],
+});
+
+await t.finished;</code></pre>
+      </div>
+
+      <footer class="shell-footer desktop-only">
+        <p>
+          <code>view-transitions-mock</code> is a Chrome DevRel Project.<br />
+          Source Code available
+          <a href="https://github.com/GoogleChromeLabs/view-transitions-mock"
+            >on GitHub</a
+          >
+          –
+          <a href="https://www.apache.org/licenses/LICENSE-2.0.txt"
+            >Apache License, Version 2.0</a
+          >
+        </p>
+      </footer>
+    </aside>
+
+    <script src="../shared.js"></script>
+  </body>
+</html>
