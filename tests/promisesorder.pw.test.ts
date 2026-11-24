@@ -363,6 +363,9 @@ test.describe("Promises Order", () => {
       return order;
     };
 
+    // Per-task order (Chromium, WebKit < 323173@main, and this mock):
+    // each skipped transition’s update callback runs in its own task / microtask turn,
+    // so vt1’s updateCallbackDone & finished settle before vt2’s callback runs.
     const expectedResult = [
       "ready1Catch",
       "ready2Catch",
@@ -378,12 +381,35 @@ test.describe("Promises Order", () => {
       "finished3",
     ];
 
+    // Spec batch-flush order (Firefox, and WebKit >= 323173@main):
+    // #flush-the-update-callback-queue iterates [vt1, vt2] in a single task.
+    // In #call-the-update-callback, WebIDL runs a microtask checkpoint when
+    // callback1 returns (step 5) — before step 8 queues the reaction to
+    // callbackPromise. So callback2 runs before vt1’s reaction drains during
+    // callback2’s exit microtask checkpoint.
+    const expectedBatchFlushResult = [
+      "ready1Catch",
+      "ready2Catch",
+      "callback1",
+      "callback2",
+      "updateCallbackDone1",
+      "finished1",
+      "updateCallbackDone2",
+      "finished2",
+      "callback3",
+      "updateCallbackDone3",
+      "ready3",
+      "finished3",
+    ];
+
     // Native result
     if (!testInfo.project.name.endsWith("-nosupport")) {
       const nativeResult = await page.evaluate(
         startTripleVTAndReturnLoggedMessages,
       );
-      expect(nativeResult).toEqual(expectedResult);
+      expect([expectedResult, expectedBatchFlushResult]).toContainEqual(
+        nativeResult,
+      );
     }
 
     // Force register the mock
