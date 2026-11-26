@@ -1,7 +1,7 @@
 {
     "name": "view-transitions-mock",
     "version": "1.1.0",
-    "description": "Mock support for Same-Document View Transitions",
+    "description": "A non-visual polyfill for Same-Document and Element-Scoped View Transitions",
     "type": "module",
     "main": "dist/index.js",
     "module": "dist/index.js",

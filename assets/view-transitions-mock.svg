@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2040 916" width="2040" height="916" role="img" aria-labelledby="diagram-title diagram-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2040 900" width="2040" height="900" role="img" aria-labelledby="diagram-title diagram-desc">
   <title id="diagram-title">View Transitions Mock Lifecycle Flow</title>
-  <desc id="diagram-desc">Flowchart comparing the native Same-Document View Transitions lifecycle against view-transitions-mock. Starting from State A, the flow splits into two branches: Native Implementation executes all 10 steps, while view-transitions-mock skips snapshot capture, rendering pause/resume, pseudo-tree construction, and animations, executing only DOM updates and resolving the updateCallbackDone, ready, and finished promises before merging into State B.</desc>
+  <desc id="diagram-desc">Flowchart comparing the native Same-Document and Element-Scoped View Transitions lifecycle against view-transitions-mock. Starting from State A, the flow splits into two branches: Native Implementation executes all 10 steps, while view-transitions-mock skips snapshot capture, rendering pause/resume, pseudo-tree construction, and animations, executing only DOM updates and resolving the updateCallbackDone, ready, and finished promises before merging into State B.</desc>
 
   <defs>
     <style>
@@ -178,15 +178,14 @@
   </defs>
 
   <!-- Clean white background (ensures legibility on both light and dark themes) -->
-  <rect x="0" y="0" width="2040" height="916" rx="18" fill="#ffffff"/>
+  <rect x="0" y="0" width="2040" height="900" rx="18" fill="#ffffff"/>
 
   <!-- ================================================================ -->
   <!-- HEADER: Title + Tagline                                          -->
   <!-- ================================================================ -->
   <g id="header">
     <text x="1020" y="96" text-anchor="middle" class="hero-title">View Transitions Mock</text>
-    <text x="1020" y="140" text-anchor="middle" class="hero-tagline">A non-visual polyfill for Same-Document View Transitions</text>
-    <line x1="690" y1="172" x2="1350" y2="172" stroke="#d5d5d5" stroke-width="2" stroke-linecap="round"/>
+    <text x="1020" y="140" text-anchor="middle" class="hero-tagline">A non-visual polyfill for Same-Document and Element-Scoped View Transitions</text>
   </g>
 
   <!-- ================================================================ -->
@@ -195,30 +194,30 @@
   <g id="flow-connectors">
     <!-- Left Fork (State A -> Top & Bottom Tracks) -->
     <g fill="none" stroke="#929292" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M 260 530 L 286 530"/>
-      <path d="M 286 530 Q 302 530 302 514 L 302 382 Q 302 366 318 366 L 335 366"/>
-      <path d="M 286 530 Q 302 530 302 546 L 302 678 Q 302 694 318 694 L 335 694"/>
+      <path d="M 260 514 L 286 514"/>
+      <path d="M 286 514 Q 302 514 302 498 L 302 366 Q 302 350 318 350 L 335 350"/>
+      <path d="M 286 514 Q 302 514 302 530 L 302 662 Q 302 678 318 678 L 335 678"/>
     </g>
     <!-- Arrowhead into Native Implementation -->
-    <polygon points="346,366 332,358 332,374" fill="#929292"/>
+    <polygon points="346,350 332,342 332,358" fill="#929292"/>
     <!-- Arrowhead into view-transitions-mock -->
-    <polygon points="346,694 332,686 332,702" fill="#929292"/>
+    <polygon points="346,678 332,670 332,686" fill="#929292"/>
 
     <!-- Right Merge (Top & Bottom Tracks -> State B) -->
     <g fill="none" stroke="#929292" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M 1692 366 L 1722 366 Q 1738 366 1738 382 L 1738 514 Q 1738 530 1754 530"/>
-      <path d="M 1692 694 L 1722 694 Q 1738 694 1738 678 L 1738 546 Q 1738 530 1754 530"/>
-      <path d="M 1754 530 L 1767 530"/>
+      <path d="M 1692 350 L 1722 350 Q 1738 350 1738 366 L 1738 498 Q 1738 514 1754 514"/>
+      <path d="M 1692 678 L 1722 678 Q 1738 678 1738 662 L 1738 530 Q 1738 514 1754 514"/>
+      <path d="M 1754 514 L 1767 514"/>
     </g>
     <!-- Arrowhead into State B -->
-    <polygon points="1778,530 1764,522 1764,538" fill="#929292"/>
+    <polygon points="1778,514 1764,506 1764,522" fill="#929292"/>
   </g>
 
   <!-- ================================================================ -->
   <!-- STATE A (Left Browser Card)                                      -->
   <!-- ================================================================ -->
   <g id="state-a">
-    <g transform="translate(44, 412)" filter="url(#glow-pink)">
+    <g transform="translate(44, 396)" filter="url(#glow-pink)">
       <!-- Browser Frame -->
       <rect x="0" y="0" width="216" height="236" rx="18" fill="#f05da7" stroke="#cb2979" stroke-width="5.5"/>
       <!-- Window Control Dots -->
@@ -253,120 +252,120 @@
         <rect x="144" y="200" width="38" height="3.2" rx="1.6"/>
       </g>
     </g>
-    <text x="152" y="686" text-anchor="middle" class="state-label" fill="#c72c71">STATE A</text>
+    <text x="152" y="670" text-anchor="middle" class="state-label" fill="#c72c71">STATE A</text>
   </g>
 
   <!-- ================================================================ -->
   <!-- TOP TRACK: NATIVE IMPLEMENTATION                                 -->
   <!-- ================================================================ -->
   <g id="track-native">
-    <text x="1020" y="222" text-anchor="middle" class="track-heading">NATIVE IMPLEMENTATION</text>
-    <rect x="348" y="238" width="1344" height="256" rx="22" fill="#ffffff" stroke="#929292" stroke-width="3.5"/>
-    <line x1="482" y1="318.0" x2="493" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="501,318.0 492,312.5 492,323.5" fill="#5e5e5e"/>
-    <line x1="614" y1="318.0" x2="625" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="633,318.0 624,312.5 624,323.5" fill="#5e5e5e"/>
-    <line x1="746" y1="318.0" x2="757" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="765,318.0 756,312.5 756,323.5" fill="#5e5e5e"/>
-    <line x1="878" y1="318.0" x2="889" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="897,318.0 888,312.5 888,323.5" fill="#5e5e5e"/>
-    <line x1="1010" y1="318.0" x2="1021" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1029,318.0 1020,312.5 1020,323.5" fill="#5e5e5e"/>
-    <line x1="1142" y1="318.0" x2="1153" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1161,318.0 1152,312.5 1152,323.5" fill="#5e5e5e"/>
-    <line x1="1274" y1="318.0" x2="1285" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1293,318.0 1284,312.5 1284,323.5" fill="#5e5e5e"/>
-    <line x1="1406" y1="318.0" x2="1417" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1425,318.0 1416,312.5 1416,323.5" fill="#5e5e5e"/>
-    <line x1="1538" y1="318.0" x2="1549" y2="318.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1557,318.0 1548,312.5 1548,323.5" fill="#5e5e5e"/>
-    <g transform="translate(372, 264)">
+    <text x="1020" y="206" text-anchor="middle" class="track-heading">NATIVE IMPLEMENTATION</text>
+    <rect x="348" y="222" width="1344" height="256" rx="22" fill="#ffffff" stroke="#929292" stroke-width="3.5"/>
+    <line x1="482" y1="302.0" x2="493" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="501,302.0 492,296.5 492,307.5" fill="#5e5e5e"/>
+    <line x1="614" y1="302.0" x2="625" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="633,302.0 624,296.5 624,307.5" fill="#5e5e5e"/>
+    <line x1="746" y1="302.0" x2="757" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="765,302.0 756,296.5 756,307.5" fill="#5e5e5e"/>
+    <line x1="878" y1="302.0" x2="889" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="897,302.0 888,296.5 888,307.5" fill="#5e5e5e"/>
+    <line x1="1010" y1="302.0" x2="1021" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1029,302.0 1020,296.5 1020,307.5" fill="#5e5e5e"/>
+    <line x1="1142" y1="302.0" x2="1153" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1161,302.0 1152,296.5 1152,307.5" fill="#5e5e5e"/>
+    <line x1="1274" y1="302.0" x2="1285" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1293,302.0 1284,296.5 1284,307.5" fill="#5e5e5e"/>
+    <line x1="1406" y1="302.0" x2="1417" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1425,302.0 1416,296.5 1416,307.5" fill="#5e5e5e"/>
+    <line x1="1538" y1="302.0" x2="1549" y2="302.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1557,302.0 1548,296.5 1548,307.5" fill="#5e5e5e"/>
+    <g transform="translate(372, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-camera"/>
     </g>
     <g class="step-label">
-      <text x="426.0" y="404" text-anchor="middle">Capture</text>
-      <text x="426.0" y="426" text-anchor="middle">Before</text>
-      <text x="426.0" y="448" text-anchor="middle">Snapshots</text>
+      <text x="426.0" y="388" text-anchor="middle">Capture</text>
+      <text x="426.0" y="410" text-anchor="middle">Before</text>
+      <text x="426.0" y="432" text-anchor="middle">Snapshots</text>
     </g>
-    <g transform="translate(504, 264)">
+    <g transform="translate(504, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-gear-pause"/>
     </g>
     <g class="step-label">
-      <text x="558.0" y="414" text-anchor="middle">Pause</text>
-      <text x="558.0" y="437" text-anchor="middle">Rendering</text>
+      <text x="558.0" y="398" text-anchor="middle">Pause</text>
+      <text x="558.0" y="421" text-anchor="middle">Rendering</text>
     </g>
-    <g transform="translate(636, 264)">
+    <g transform="translate(636, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-dom"/>
     </g>
     <g class="step-label">
-      <text x="690.0" y="404" text-anchor="middle">Update</text>
-      <text x="690.0" y="426" text-anchor="middle">the</text>
-      <text x="690.0" y="448" text-anchor="middle">DOM</text>
+      <text x="690.0" y="388" text-anchor="middle">Update</text>
+      <text x="690.0" y="410" text-anchor="middle">the</text>
+      <text x="690.0" y="432" text-anchor="middle">DOM</text>
     </g>
-    <g transform="translate(768, 264)">
+    <g transform="translate(768, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-cycle"/>
     </g>
     <g class="step-label">
-      <text x="822.0" y="404" text-anchor="middle">Resolve</text>
-      <text x="822.0" y="425" text-anchor="middle" font-size="11.2">updateCallbackDone</text>
-      <text x="822.0" y="448" text-anchor="middle">Promise</text>
+      <text x="822.0" y="388" text-anchor="middle">Resolve</text>
+      <text x="822.0" y="409" text-anchor="middle" font-size="11.2">updateCallbackDone</text>
+      <text x="822.0" y="432" text-anchor="middle">Promise</text>
     </g>
-    <g transform="translate(900, 264)">
+    <g transform="translate(900, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-camera"/>
     </g>
     <g class="step-label">
-      <text x="954.0" y="404" text-anchor="middle">Capture</text>
-      <text x="954.0" y="426" text-anchor="middle">After</text>
-      <text x="954.0" y="448" text-anchor="middle">Snapshots</text>
+      <text x="954.0" y="388" text-anchor="middle">Capture</text>
+      <text x="954.0" y="410" text-anchor="middle">After</text>
+      <text x="954.0" y="432" text-anchor="middle">Snapshots</text>
     </g>
-    <g transform="translate(1032, 264)">
+    <g transform="translate(1032, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-pseudo-tree"/>
     </g>
     <g class="step-label">
-      <text x="1086.0" y="404" text-anchor="middle">Construct</text>
-      <text x="1086.0" y="426" text-anchor="middle">Pseudo-Tree</text>
-      <text x="1086.0" y="448" text-anchor="middle">&amp; Animations</text>
+      <text x="1086.0" y="388" text-anchor="middle">Construct</text>
+      <text x="1086.0" y="410" text-anchor="middle">Pseudo-Tree</text>
+      <text x="1086.0" y="432" text-anchor="middle">&amp; Animations</text>
     </g>
-    <g transform="translate(1164, 264)">
+    <g transform="translate(1164, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-gear-play"/>
     </g>
     <g class="step-label">
-      <text x="1218.0" y="414" text-anchor="middle">Resume</text>
-      <text x="1218.0" y="437" text-anchor="middle">Rendering</text>
+      <text x="1218.0" y="398" text-anchor="middle">Resume</text>
+      <text x="1218.0" y="421" text-anchor="middle">Rendering</text>
     </g>
-    <g transform="translate(1296, 264)">
+    <g transform="translate(1296, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-check"/>
     </g>
     <g class="step-label">
-      <text x="1350.0" y="404" text-anchor="middle">Resolve</text>
-      <text x="1350.0" y="426" text-anchor="middle">ready</text>
-      <text x="1350.0" y="448" text-anchor="middle">Promise</text>
+      <text x="1350.0" y="388" text-anchor="middle">Resolve</text>
+      <text x="1350.0" y="410" text-anchor="middle">ready</text>
+      <text x="1350.0" y="432" text-anchor="middle">Promise</text>
     </g>
-    <g transform="translate(1428, 264)">
+    <g transform="translate(1428, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-play-slider"/>
     </g>
     <g class="step-label">
-      <text x="1482.0" y="404" text-anchor="middle">Play and</text>
-      <text x="1482.0" y="426" text-anchor="middle">wait for</text>
-      <text x="1482.0" y="448" text-anchor="middle">Animations</text>
+      <text x="1482.0" y="388" text-anchor="middle">Play and</text>
+      <text x="1482.0" y="410" text-anchor="middle">wait for</text>
+      <text x="1482.0" y="432" text-anchor="middle">Animations</text>
     </g>
-    <g transform="translate(1560, 264)">
+    <g transform="translate(1560, 248)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-flag"/>
     </g>
     <g class="step-label">
-      <text x="1614.0" y="404" text-anchor="middle">Resolve</text>
-      <text x="1614.0" y="426" text-anchor="middle">finished</text>
-      <text x="1614.0" y="448" text-anchor="middle">Promise</text>
+      <text x="1614.0" y="388" text-anchor="middle">Resolve</text>
+      <text x="1614.0" y="410" text-anchor="middle">finished</text>
+      <text x="1614.0" y="432" text-anchor="middle">Promise</text>
     </g>
   </g>
 
@@ -374,119 +373,119 @@
   <!-- BOTTOM TRACK: VIEW-TRANSITIONS-MOCK                              -->
   <!-- ================================================================ -->
   <g id="track-mock">
-    <text x="1020" y="550" text-anchor="middle" class="track-heading">VIEW-TRANSITIONS-MOCK</text>
-    <rect x="348" y="566" width="1344" height="256" rx="22" fill="#ffffff" stroke="#929292" stroke-width="3.5"/>
-    <line x1="482" y1="646.0" x2="493" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="501,646.0 492,640.5 492,651.5" fill="#5e5e5e"/>
-    <line x1="614" y1="646.0" x2="625" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="633,646.0 624,640.5 624,651.5" fill="#5e5e5e"/>
-    <line x1="746" y1="646.0" x2="757" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="765,646.0 756,640.5 756,651.5" fill="#5e5e5e"/>
-    <line x1="878" y1="646.0" x2="889" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="897,646.0 888,640.5 888,651.5" fill="#5e5e5e"/>
-    <line x1="1010" y1="646.0" x2="1021" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1029,646.0 1020,640.5 1020,651.5" fill="#5e5e5e"/>
-    <line x1="1142" y1="646.0" x2="1153" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1161,646.0 1152,640.5 1152,651.5" fill="#5e5e5e"/>
-    <line x1="1274" y1="646.0" x2="1285" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1293,646.0 1284,640.5 1284,651.5" fill="#5e5e5e"/>
-    <line x1="1406" y1="646.0" x2="1417" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1425,646.0 1416,640.5 1416,651.5" fill="#5e5e5e"/>
-    <line x1="1538" y1="646.0" x2="1549" y2="646.0" stroke="#5e5e5e" stroke-width="2.8"/>
-    <polygon points="1557,646.0 1548,640.5 1548,651.5" fill="#5e5e5e"/>
-    <g transform="translate(372, 592)" opacity="0.58">
+    <text x="1020" y="534" text-anchor="middle" class="track-heading">VIEW-TRANSITIONS-MOCK</text>
+    <rect x="348" y="550" width="1344" height="256" rx="22" fill="#ffffff" stroke="#929292" stroke-width="3.5"/>
+    <line x1="482" y1="630.0" x2="493" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="501,630.0 492,624.5 492,635.5" fill="#5e5e5e"/>
+    <line x1="614" y1="630.0" x2="625" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="633,630.0 624,624.5 624,635.5" fill="#5e5e5e"/>
+    <line x1="746" y1="630.0" x2="757" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="765,630.0 756,624.5 756,635.5" fill="#5e5e5e"/>
+    <line x1="878" y1="630.0" x2="889" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="897,630.0 888,624.5 888,635.5" fill="#5e5e5e"/>
+    <line x1="1010" y1="630.0" x2="1021" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1029,630.0 1020,624.5 1020,635.5" fill="#5e5e5e"/>
+    <line x1="1142" y1="630.0" x2="1153" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1161,630.0 1152,624.5 1152,635.5" fill="#5e5e5e"/>
+    <line x1="1274" y1="630.0" x2="1285" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1293,630.0 1284,624.5 1284,635.5" fill="#5e5e5e"/>
+    <line x1="1406" y1="630.0" x2="1417" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1425,630.0 1416,624.5 1416,635.5" fill="#5e5e5e"/>
+    <line x1="1538" y1="630.0" x2="1549" y2="630.0" stroke="#5e5e5e" stroke-width="2.8"/>
+    <polygon points="1557,630.0 1548,624.5 1548,635.5" fill="#5e5e5e"/>
+    <g transform="translate(372, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-camera"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="369.5" y1="589.5" x2="482.5" y2="702.5"/><line x1="482.5" y1="589.5" x2="369.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="369.5" y1="573.5" x2="482.5" y2="686.5"/><line x1="482.5" y1="573.5" x2="369.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="426.0" y="732" text-anchor="middle">Capture</text>
-      <text x="426.0" y="754" text-anchor="middle">Before</text>
-      <text x="426.0" y="776" text-anchor="middle">Snapshots</text>
+      <text x="426.0" y="716" text-anchor="middle">Capture</text>
+      <text x="426.0" y="738" text-anchor="middle">Before</text>
+      <text x="426.0" y="760" text-anchor="middle">Snapshots</text>
     </g>
-    <g transform="translate(504, 592)" opacity="0.58">
+    <g transform="translate(504, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-gear-pause"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="501.5" y1="589.5" x2="614.5" y2="702.5"/><line x1="614.5" y1="589.5" x2="501.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="501.5" y1="573.5" x2="614.5" y2="686.5"/><line x1="614.5" y1="573.5" x2="501.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="558.0" y="742" text-anchor="middle">Pause</text>
-      <text x="558.0" y="765" text-anchor="middle">Rendering</text>
+      <text x="558.0" y="726" text-anchor="middle">Pause</text>
+      <text x="558.0" y="749" text-anchor="middle">Rendering</text>
     </g>
-    <g transform="translate(636, 592)">
+    <g transform="translate(636, 576)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-dom"/>
     </g>
     <g class="step-label">
-      <text x="690.0" y="732" text-anchor="middle">Update</text>
-      <text x="690.0" y="754" text-anchor="middle">the</text>
-      <text x="690.0" y="776" text-anchor="middle">DOM</text>
+      <text x="690.0" y="716" text-anchor="middle">Update</text>
+      <text x="690.0" y="738" text-anchor="middle">the</text>
+      <text x="690.0" y="760" text-anchor="middle">DOM</text>
     </g>
-    <g transform="translate(768, 592)">
+    <g transform="translate(768, 576)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-cycle"/>
     </g>
     <g class="step-label">
-      <text x="822.0" y="732" text-anchor="middle">Resolve</text>
-      <text x="822.0" y="753" text-anchor="middle" font-size="11.2">updateCallbackDone</text>
-      <text x="822.0" y="776" text-anchor="middle">Promise</text>
+      <text x="822.0" y="716" text-anchor="middle">Resolve</text>
+      <text x="822.0" y="737" text-anchor="middle" font-size="11.2">updateCallbackDone</text>
+      <text x="822.0" y="760" text-anchor="middle">Promise</text>
     </g>
-    <g transform="translate(900, 592)" opacity="0.58">
+    <g transform="translate(900, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-camera"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="897.5" y1="589.5" x2="1010.5" y2="702.5"/><line x1="1010.5" y1="589.5" x2="897.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="897.5" y1="573.5" x2="1010.5" y2="686.5"/><line x1="1010.5" y1="573.5" x2="897.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="954.0" y="732" text-anchor="middle">Capture</text>
-      <text x="954.0" y="754" text-anchor="middle">After</text>
-      <text x="954.0" y="776" text-anchor="middle">Snapshots</text>
+      <text x="954.0" y="716" text-anchor="middle">Capture</text>
+      <text x="954.0" y="738" text-anchor="middle">After</text>
+      <text x="954.0" y="760" text-anchor="middle">Snapshots</text>
     </g>
-    <g transform="translate(1032, 592)" opacity="0.58">
+    <g transform="translate(1032, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-pseudo-tree"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1029.5" y1="589.5" x2="1142.5" y2="702.5"/><line x1="1142.5" y1="589.5" x2="1029.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1029.5" y1="573.5" x2="1142.5" y2="686.5"/><line x1="1142.5" y1="573.5" x2="1029.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="1086.0" y="732" text-anchor="middle">Construct</text>
-      <text x="1086.0" y="754" text-anchor="middle">Pseudo-Tree</text>
-      <text x="1086.0" y="776" text-anchor="middle">&amp; Animations</text>
+      <text x="1086.0" y="716" text-anchor="middle">Construct</text>
+      <text x="1086.0" y="738" text-anchor="middle">Pseudo-Tree</text>
+      <text x="1086.0" y="760" text-anchor="middle">&amp; Animations</text>
     </g>
-    <g transform="translate(1164, 592)" opacity="0.58">
+    <g transform="translate(1164, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-gear-play"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1161.5" y1="589.5" x2="1274.5" y2="702.5"/><line x1="1274.5" y1="589.5" x2="1161.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1161.5" y1="573.5" x2="1274.5" y2="686.5"/><line x1="1274.5" y1="573.5" x2="1161.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="1218.0" y="742" text-anchor="middle">Resume</text>
-      <text x="1218.0" y="765" text-anchor="middle">Rendering</text>
+      <text x="1218.0" y="726" text-anchor="middle">Resume</text>
+      <text x="1218.0" y="749" text-anchor="middle">Rendering</text>
     </g>
-    <g transform="translate(1296, 592)">
+    <g transform="translate(1296, 576)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-check"/>
     </g>
     <g class="step-label">
-      <text x="1350.0" y="732" text-anchor="middle">Resolve</text>
-      <text x="1350.0" y="754" text-anchor="middle">ready</text>
-      <text x="1350.0" y="776" text-anchor="middle">Promise</text>
+      <text x="1350.0" y="716" text-anchor="middle">Resolve</text>
+      <text x="1350.0" y="738" text-anchor="middle">ready</text>
+      <text x="1350.0" y="760" text-anchor="middle">Promise</text>
     </g>
-    <g transform="translate(1428, 592)" opacity="0.58">
+    <g transform="translate(1428, 576)" opacity="0.58">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-play-slider"/>
     </g>
-    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1425.5" y1="589.5" x2="1538.5" y2="702.5"/><line x1="1538.5" y1="589.5" x2="1425.5" y2="702.5"/></g>
+    <g stroke="#ed220a" stroke-width="13.5" stroke-linecap="butt"><line x1="1425.5" y1="573.5" x2="1538.5" y2="686.5"/><line x1="1538.5" y1="573.5" x2="1425.5" y2="686.5"/></g>
     <g class="step-label" opacity="0.46">
-      <text x="1482.0" y="732" text-anchor="middle">Play and</text>
-      <text x="1482.0" y="754" text-anchor="middle">wait for</text>
-      <text x="1482.0" y="776" text-anchor="middle">Animations</text>
+      <text x="1482.0" y="716" text-anchor="middle">Play and</text>
+      <text x="1482.0" y="738" text-anchor="middle">wait for</text>
+      <text x="1482.0" y="760" text-anchor="middle">Animations</text>
     </g>
-    <g transform="translate(1560, 592)">
+    <g transform="translate(1560, 576)">
       <rect x="0" y="0" width="108" height="108" rx="14" fill="#d5d5d5" stroke="#5e5e5e" stroke-width="3"/>
       <use href="#icon-flag"/>
     </g>
     <g class="step-label">
-      <text x="1614.0" y="732" text-anchor="middle">Resolve</text>
-      <text x="1614.0" y="754" text-anchor="middle">finished</text>
-      <text x="1614.0" y="776" text-anchor="middle">Promise</text>
+      <text x="1614.0" y="716" text-anchor="middle">Resolve</text>
+      <text x="1614.0" y="738" text-anchor="middle">finished</text>
+      <text x="1614.0" y="760" text-anchor="middle">Promise</text>
     </g>
   </g>
 
@@ -494,7 +493,7 @@
   <!-- STATE B (Right Browser Card)                                     -->
   <!-- ================================================================ -->
   <g id="state-b">
-    <g transform="translate(1780, 412)" filter="url(#glow-teal)">
+    <g transform="translate(1780, 396)" filter="url(#glow-teal)">
       <!-- Browser Frame -->
       <rect x="0" y="0" width="216" height="236" rx="18" fill="#1ee4cc" stroke="#05a89c" stroke-width="5.5"/>
       <!-- Window Control Dots -->
@@ -536,7 +535,7 @@
         <rect x="144" y="200" width="38" height="3.2" rx="1.6"/>
       </g>
     </g>
-    <text x="1888" y="686" text-anchor="middle" class="state-label" fill="#00a89c">STATE B</text>
+    <text x="1888" y="670" text-anchor="middle" class="state-label" fill="#00a89c">STATE B</text>
   </g>
 
   <!-- ================================================================ -->
@@ -544,7 +543,7 @@
   <!-- ================================================================ -->
   <g id="footer-link">
     <a href="https://chrome.dev/view-transitions-mock" target="_blank" rel="noopener noreferrer">
-      <text x="1020" y="872" text-anchor="middle" class="footer-link">https://chrome.dev/view-transitions-mock</text>
+      <text x="1020" y="856" text-anchor="middle" class="footer-link">https://chrome.dev/view-transitions-mock</text>
     </a>
   </g>
 </svg>
