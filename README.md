@@ -2,7 +2,7 @@
 
 A non-visual polyfill for Same-Document View Transitions.
 
-![View Transitions Mock](https://github.com/GoogleChromeLabs/view-transitions-mock/raw/main/assets/view-transitions-mock.jpg?raw=true)
+![View Transitions Mock](https://raw.githubusercontent.com/GoogleChromeLabs/view-transitions-mock/refs/heads/main/assets/view-transitions-mock.jpg)
 
 ## Not a polyfill. Or is it?
 
