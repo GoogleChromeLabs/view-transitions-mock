@@ -172,12 +172,30 @@ test.describe("Promises Order", () => {
       return order;
     };
 
+    // Spec order (Firefox, WebKit, Chromium when capture rects arrive before callback
+    // settles, and this mock): #call-the-update-callback’s fulfillSteps resolves
+    // updateCallbackDone and synchronously activates the transition (resolving ready),
+    // so calling skipTransition() after awaiting updateCallbackDone does not reject ready.
     const expectedResult = ["updateCallbackDone", "ready", "finished"];
+
+    // Chromium early-callback order (ViewTransitionDOMCallbackAfterCommit):
+    // Blink invokes the DOM update callback on capture commit before Viz returns
+    // capture rects. If the callback finishes first, updateCallbackDone resolves while
+    // Blink is still in kWaitingForCaptureRects (before ready resolves), so
+    // skipTransition() rejects ready (readyCatch takes 2 microtask hops via .then().catch(),
+    // landing after finished’s 1-hop .then()).
+    const expectedEarlyCallbackResult = [
+      "updateCallbackDone",
+      "finished",
+      "readyCatch",
+    ];
 
     // Native result
     if (!testInfo.project.name.endsWith("-nosupport")) {
       const nativeResult = await page.evaluate(startVTAndReturnLoggedMessages);
-      expect(nativeResult).toEqual(expectedResult);
+      expect([expectedResult, expectedEarlyCallbackResult]).toContainEqual(
+        nativeResult,
+      );
     }
 
     // Force register the mock
