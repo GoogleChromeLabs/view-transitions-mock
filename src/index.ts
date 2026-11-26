@@ -7,11 +7,11 @@ import {
   startViewTransition,
   getActiveViewTransition,
   setDocumentMocked,
-} from "./same-document";
+} from "./same-document.js";
 
-import { ViewTransition } from "./classes/ViewTransition";
-import { ViewTransitionTypeSet } from "./classes/ViewTransitionTypeSet";
-import { RegistrationTrigger } from "./types";
+import { ViewTransition } from "./classes/ViewTransition.js";
+import { ViewTransitionTypeSet } from "./classes/ViewTransitionTypeSet.js";
+import type { RegistrationTrigger } from "./types.js";
 
 let registered = false;
 let registeredDocument = false;
@@ -296,3 +296,4 @@ const unregister = (): void => {
 };
 
 export { register, unregister };
+export type { RegistrationTrigger };

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ViewTransitionTypeSet as ViewTransitionTypeSetInterface } from "../types";
+import type { ViewTransitionTypeSet as ViewTransitionTypeSetInterface } from "../types.js";
 
 class ViewTransitionTypeSet implements ViewTransitionTypeSetInterface {
   #set: Set<string>;
