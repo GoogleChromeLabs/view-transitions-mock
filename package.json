@@ -37,7 +37,7 @@
         "pretest:install-old-webkit": "PLAYWRIGHT_BROWSERS_PATH=./custom-browsers npx --yes playwright@1.45 install webkit",
         "test": "playwright test",
         "preversion": "npm run require-license-headers && npm run require-pristine-tree && npm run test",
-        "prepare": "husky install",
+        "prepare": "husky",
         "require-license-headers": "addlicense -check -f=./LICENSE src",
         "require-pristine-tree": "exit $(git status --porcelain | wc -l)",
         "add-license-headers": "addlicense -c 'Google LLC' -l apache -s=only -f=./LICENSE ."
@@ -61,13 +61,13 @@
     },
     "homepage": "https://github.com/GoogleChromeLabs/view-transitions-mock#readme",
     "devDependencies": {
-        "@playwright/test": "^1.58.1",
-        "@types/node": "^25.0.8",
-        "concurrently": "^9.2.1",
-        "esbuild": "^0.27.2",
-        "husky": "^8.0.0",
-        "prettier": "^3.4.1",
-        "typescript": "^5.7.2"
+        "@playwright/test": "^1.65.1",
+        "@types/node": "^26.6.11",
+        "concurrently": "^10.0.7",
+        "esbuild": "^0.28.2",
+        "husky": "^9.1.7",
+        "prettier": "^3.10.1",
+        "typescript": "^7.0.2"
     },
     "dependencies": {
         "watchable-promise": "^2.1.3"
