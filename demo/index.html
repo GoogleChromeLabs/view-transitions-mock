@@ -5,62 +5,258 @@
 -->
 
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>View Transitions Mock Demo</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Transitions Mock</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      const savedTheme = localStorage.getItem("theme") || "system";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+  </head>
+  <body>
+    <div class="theme-switcher" role="group" aria-label="Theme switcher">
+      <button class="theme-btn" data-mode="light" aria-label="Light Theme">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          width="16"
+          height="16"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+      </button>
+      <button class="theme-btn" data-mode="system" aria-label="System Theme">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          width="16"
+          height="16"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.75 17L9 20h6l-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+      </button>
+      <button class="theme-btn" data-mode="dark" aria-label="Dark Theme">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          width="16"
+          height="16"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
+      </button>
+    </div>
 
-  <link rel="stylesheet" href="demo.css">
-  <script src="console.js"></script>
-  <script type="module" src="demo.js"></script>
+    <header>
+      <h1>View Transitions Mock</h1>
+      <p class="description">
+        A non-visual, spec-compliant polyfill for Same-Document and
+        Element-Scoped View Transitions.
+      </p>
+    </header>
 
-  <script type="module">
-    console.log('Welcome to the view-transitions-mock demo. Click the pane to start a View Transition, and output will be logged here.');
-    console.log('Use one of the buttons to register the mock, or unregister it.');
-    console.log('TIP: In a browser with native View Transitions support, hit the “Register (forced: true)” button');
-  </script>
+    <main>
+      <h2 class="section-title">The Mock</h2>
+      <section class="toolkit-overview">
+        <p>
+          <code>view-transitions-mock</code> polyfills the full JavaScript API
+          surface of Same-Document View Transitions without the animations, so
+          you can drop <code>if (document.startViewTransition)</code> and
+          <code>if ("startViewTransition" in Element.prototype)</code> guards
+          from your codebase:
+        </p>
+        <ul class="toolkit-list">
+          <li>
+            <svg
+              class="li-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-7.618 3.032A12.056 12.056 0 003 12c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            <span
+              ><strong>Document-Scoped View Transitions</strong>:
+              <code>document.startViewTransition()</code>,
+              <code>document.activeViewTransition</code>, and
+              <code>ViewTransition</code> promises in spec-compliant
+              order.</span
+            >
+          </li>
+          <li>
+            <svg
+              class="li-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+            <span
+              ><strong>Element-Scoped View Transitions</strong>:
+              <code>Element.prototype.startViewTransition()</code>,
+              <code>activeViewTransition</code>, and
+              <code>transitionRoot</code> with concurrent and enclosing
+              transitions.</span
+            >
+          </li>
+          <li>
+            <svg
+              class="li-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              />
+            </svg>
+            <span
+              ><strong>View Transition Types &amp; Granular Registration</strong
+              >: Keeps native <code>document.startViewTransition()</code> intact
+              and only mocks missing pieces.</span
+            >
+          </li>
+        </ul>
 
-  <script type="module">
-    import { register, unregister } from "./view-transitions-mock.js";
-    
-    document.getElementById('register-auto').addEventListener('click', e => {
-      e.preventDefault();
-      const registered = register();
-      console.log
-    });
-    
-    document.getElementById('register-norequiretypes').addEventListener('click', e => {
-      e.preventDefault();
-      register({ requireTypes: false });
-    });
-    
-    document.getElementById('register-forced').addEventListener('click', e => {
-      e.preventDefault();
-      register({ forced: true });
-    });
+        <p>
+          Try the <a href="#demos">interactive demos below</a>, or read the full
+          documentation and source code on
+          <a href="https://github.com/GoogleChromeLabs/view-transitions-mock"
+            >GitHub</a
+          >.
+        </p>
+      </section>
 
-    document.getElementById('unregister').addEventListener('click', e => {
-      e.preventDefault();
-      unregister();
-    });
-  </script>
-</head>
-<body>
-  <main>
-    <div class="box-container">
-      <div class="box">
-        <span>ViewTransitions Mock<br>Click to trigger</span>
+      <h2 class="section-title" id="installation">Getting Started</h2>
+      <section class="installation-section">
+        <p>Install the package using your favorite package manager:</p>
+        <pre><code>npm i view-transitions-mock</code></pre>
+
+        <p>
+          Import and call <code>register()</code> once before invoking
+          <code>startViewTransition()</code>:
+        </p>
+        <pre><code>import { register } from "view-transitions-mock";
+
+register();</code></pre>
+
+        <p>
+          By default, registration checks for native support of Document View
+          Transitions, View Transition Types, and Element-Scoped View
+          Transitions, mocking only what is missing. Pass
+          <code>{ forced: true }</code> to force the mock in any browser, or
+          check the <a href="#demos">demos</a> below to see it in action.
+        </p>
+      </section>
+
+      <h2 class="section-title" id="demos">Demos</h2>
+      <div class="grid">
+        <a href="element-scoped/" class="card">
+          <div class="card-content">
+            <h3 class="card-title">
+              <svg
+                class="card-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              Element-Scoped View Transitions
+            </h3>
+            <p class="card-desc">
+              Reorder a clipped list with
+              <code>element.startViewTransition()</code> underneath a top-layer
+              <code>[popover]</code>, and compare native vs. granular mocked
+              execution.
+            </p>
+          </div>
+          <div class="card-link">Demo <span>&rarr;</span></div>
+        </a>
+
+        <a href="document-scoped/" class="card">
+          <div class="card-content">
+            <h3 class="card-title">
+              <svg
+                class="card-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                />
+              </svg>
+              Document-Scoped View Transitions
+            </h3>
+            <p class="card-desc">
+              Morph a card layout with
+              <code>document.startViewTransition({ update, types })</code> and
+              test <code>skipTransition()</code> promise ordering with the mock
+              enabled or disabled.
+            </p>
+          </div>
+          <div class="card-link">Demo <span>&rarr;</span></div>
+        </a>
       </div>
-    </div>
-    <div id="controls">
-      <button id="register-auto">Register Mock (Default)</button>
-      <button id="register-norequiretypes">Register Mock (requireTypes: false)</button>
-      <button id="register-forced">Register Mock (forced: true)</button>
-      <button id="unregister">Unregister Mock</button>
-    </div>
-  </main>
-  <aside>
-    <ol id="log"></ol>
-  </aside>
-</body>
+    </main>
+
+    <footer class="demo-footer">
+      <p>
+        <code>view-transitions-mock</code> is a Chrome DevRel Project.<br />
+        Source Code available
+        <a href="https://github.com/GoogleChromeLabs/view-transitions-mock"
+          >on GitHub</a
+        >
+        –
+        <a href="https://www.apache.org/licenses/LICENSE-2.0.txt"
+          >Apache License, Version 2.0</a
+        >
+      </p>
+    </footer>
+
+    <script src="shared.js"></script>
+  </body>
 </html>

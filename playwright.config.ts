@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { mkdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
 type BrowserPathConfig = Record<string, string>;
@@ -29,6 +32,35 @@ const browserPaths: BrowserPathConfigs = {
   },
 };
 
+// On macOS 27+, ~/Library/Application Support/Firefox is TCC-protected.
+// Playwright's bundled Firefox (< 158) still resolves that directory despite
+// `-profile`, causing headless launches to hang at 100% CPU unless the host
+// terminal has Full Disk Access (microsoft/playwright#42768).
+// Pointing CFFIXED_USER_HOME at a temp directory keeps the lookup outside the
+// protected path; needed for firefox-142-nosupport even on newer Playwright.
+function getFirefoxLaunchEnv(): Record<string, string> | undefined {
+  if (process.platform !== 'darwin') {
+    return undefined;
+  }
+
+  const env: Record<string, string> = {};
+  for (const [key, value] of Object.entries(process.env)) {
+    if (typeof value === 'string') {
+      env[key] = value;
+    }
+  }
+
+  if (!env.CFFIXED_USER_HOME) {
+    const homeDir = join(tmpdir(), 'view-transitions-mock-pw-firefox-home');
+    mkdirSync(homeDir, { recursive: true, mode: 0o700 });
+    env.CFFIXED_USER_HOME = homeDir;
+  }
+
+  return env;
+}
+
+const firefoxLaunchEnv = getFirefoxLaunchEnv();
+
 export default defineConfig({
   testDir: './tests',
   tsconfig: './tsconfig.json',
@@ -41,7 +73,14 @@ export default defineConfig({
     },
     {
       name: 'firefox-latest',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        ...(firefoxLaunchEnv && {
+          launchOptions: {
+            env: firefoxLaunchEnv,
+          },
+        }),
+      },
     },
     {
       name: 'webkit-latest',
@@ -53,6 +92,7 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
         launchOptions: {
           executablePath: browserPaths['firefox-142-nosupport'][process.platform],
+          ...(firefoxLaunchEnv && { env: firefoxLaunchEnv }),
         },
       },
     },

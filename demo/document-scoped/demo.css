@@ -1,0 +1,212 @@
+/**
+ * Copyright 2026 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --border: rgba(148, 163, 184, 0.18);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-gradient: linear-gradient(
+    135deg,
+    #38bdf8 0%,
+    #818cf8 50%,
+    #ec4899 100%
+  );
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: rgba(148, 163, 184, 0.28);
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #0284c7;
+  --accent-gradient: linear-gradient(
+    135deg,
+    #0284c7 0%,
+    #4f46e5 50%,
+    #db2777 100%
+  );
+  --shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+}
+
+@media (prefers-color-scheme: light) {
+  html:not([data-theme="dark"]) {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: rgba(148, 163, 184, 0.28);
+    --text: #0f172a;
+    --muted: #64748b;
+    --accent: #0284c7;
+    --accent-gradient: linear-gradient(
+      135deg,
+      #0284c7 0%,
+      #4f46e5 50%,
+      #db2777 100%
+    );
+    --shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  view-transition-name: none;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.5rem;
+}
+
+.stage {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.morph-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.morph-grid.is-compact {
+  grid-template-columns: 1fr;
+}
+
+.morph-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  view-transition-class: morph-card;
+}
+
+.morph-card[data-card="1"] {
+  view-transition-name: card-1;
+}
+.morph-card[data-card="2"] {
+  view-transition-name: card-2;
+}
+.morph-card[data-card="3"] {
+  view-transition-name: card-3;
+}
+.morph-card[data-card="4"] {
+  view-transition-name: card-4;
+}
+
+.morph-num {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.morph-card[data-card="1"] .morph-num {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+}
+.morph-card[data-card="2"] .morph-num {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+.morph-card[data-card="3"] .morph-num {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+.morph-card[data-card="4"] .morph-num {
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+}
+
+.morph-body strong {
+  display: block;
+  font-size: 0.98rem;
+  margin-bottom: 0.15rem;
+}
+
+.morph-body span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-group(.morph-card) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 520px) {
+  .morph-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

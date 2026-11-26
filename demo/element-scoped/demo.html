@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2026 Google LLC
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Element-Scoped List Reorder</title>
+    <link rel="stylesheet" href="demo.css" />
+    <script>
+      const savedTheme = localStorage.getItem("theme") || "system";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+    <script type="module" src="demo.js"></script>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="list-wrap">
+        <ul id="scoped-list" class="album-list">
+          <li class="album-item" data-id="track-1">
+            <div class="album-cover c1" aria-hidden="true">01</div>
+            <div class="album-meta">
+              <div class="album-title">Midnight Synthesis</div>
+              <div class="album-artist">Neon Drift · 4:12</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Midnight Synthesis up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Midnight Synthesis down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+          <li class="album-item" data-id="track-2">
+            <div class="album-cover c2" aria-hidden="true">02</div>
+            <div class="album-meta">
+              <div class="album-title">Glass Horizons</div>
+              <div class="album-artist">Cloud Architecture · 3:48</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Glass Horizons up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Glass Horizons down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+          <li class="album-item" data-id="track-3">
+            <div class="album-cover c3" aria-hidden="true">03</div>
+            <div class="album-meta">
+              <div class="album-title">Parallel States</div>
+              <div class="album-artist">Subtree Collective · 5:04</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Parallel States up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Parallel States down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+          <li class="album-item" data-id="track-4">
+            <div class="album-cover c4" aria-hidden="true">04</div>
+            <div class="album-meta">
+              <div class="album-title">Chromatic Shift</div>
+              <div class="album-artist">Pixel &amp; Frame · 3:29</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Chromatic Shift up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Chromatic Shift down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+          <li class="album-item" data-id="track-5">
+            <div class="album-cover c5" aria-hidden="true">05</div>
+            <div class="album-meta">
+              <div class="album-title">Keyframe Echoes</div>
+              <div class="album-artist">Timeline Studio · 4:41</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Keyframe Echoes up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Keyframe Echoes down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+          <li class="album-item" data-id="track-6">
+            <div class="album-cover c6" aria-hidden="true">06</div>
+            <div class="album-meta">
+              <div class="album-title">Top Layer Dreams</div>
+              <div class="album-artist">Stacking Context · 3:55</div>
+            </div>
+            <div class="album-actions">
+              <button
+                class="move-btn"
+                data-move="up"
+                aria-label="Move Top Layer Dreams up"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="move-btn"
+                data-move="down"
+                aria-label="Move Top Layer Dreams down"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+        </ul>
+
+        <div
+          id="scoped-popover"
+          class="demo-popover"
+          popover="manual"
+          role="dialog"
+          aria-label="Top-layer popover"
+        >
+          <div class="popover-header">
+            <strong>Top-Layer Popover</strong>
+            <button
+              class="popover-close"
+              popovertarget="scoped-popover"
+              popovertargetaction="hide"
+              aria-label="Close popover"
+            >
+              ✕
+            </button>
+          </div>
+          <p>
+            This <code>[popover]</code> sits outside the
+            <code>&lt;ul&gt;</code> scope. Click <strong>Shuffle</strong> while
+            it is open: native Element-Scoped View Transitions animate
+            underneath without covering it.
+          </p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-shuffle" class="btn btn-primary">Shuffle</button>
+        <button id="btn-reverse" class="btn">Reverse</button>
+        <button id="btn-popover" class="btn" popovertarget="scoped-popover">
+          Toggle Popover
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

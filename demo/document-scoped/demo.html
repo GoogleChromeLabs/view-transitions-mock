@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2026 Google LLC
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document-Scoped Card Morph</title>
+    <link rel="stylesheet" href="demo.css" />
+    <script>
+      const savedTheme = localStorage.getItem("theme") || "system";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+    <script type="module" src="demo.js"></script>
+  </head>
+  <body>
+    <div class="stage">
+      <div id="doc-grid" class="morph-grid">
+        <div class="morph-card" data-card="1">
+          <div class="morph-num">01</div>
+          <div class="morph-body">
+            <strong>Capture Old State</strong>
+            <span>Snapshot participating elements</span>
+          </div>
+        </div>
+        <div class="morph-card" data-card="2">
+          <div class="morph-num">02</div>
+          <div class="morph-body">
+            <strong>Run Update Callback</strong>
+            <span>Resolves updateCallbackDone</span>
+          </div>
+        </div>
+        <div class="morph-card" data-card="3">
+          <div class="morph-num">03</div>
+          <div class="morph-body">
+            <strong>Activate &amp; Animate</strong>
+            <span>Resolves ready promise</span>
+          </div>
+        </div>
+        <div class="morph-card" data-card="4">
+          <div class="morph-num">04</div>
+          <div class="morph-body">
+            <strong>Complete Transition</strong>
+            <span>Resolves finished promise</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-shuffle" class="btn btn-primary">Shuffle Cards</button>
+        <button id="btn-layout" class="btn">Toggle Layout</button>
+        <button id="btn-skip" class="btn">Start &amp; Skip</button>
+      </div>
+    </div>
+  </body>
+</html>
