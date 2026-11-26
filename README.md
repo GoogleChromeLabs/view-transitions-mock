@@ -1,6 +1,6 @@
 # View Transitions Mock
 
-A non-visual polyfill for Same-Document View Transitions.
+A non-visual polyfill for Same-Document and Element-Scoped View Transitions.
 
 ![View Transitions Mock](https://raw.githubusercontent.com/GoogleChromeLabs/view-transitions-mock/refs/heads/main/assets/view-transitions-mock.jpg)
 
