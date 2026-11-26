@@ -82,19 +82,23 @@ test.describe("Registration and Unregistration", () => {
 
   test("should not register when there is native support for types and requireScoped is false", async ({
     page,
-  }, testInfo) => {
+  }) => {
     const messages: string[] = [];
 
     page.on("console", (msg) => messages.push(msg.text()));
+
+    const hasNativeTypes = await page.evaluate(
+      () =>
+        "startViewTransition" in document &&
+        "ViewTransition" in window &&
+        "types" in ViewTransition.prototype,
+    );
 
     await page.evaluate(() => {
       (window as any).register({ requireTypes: true, requireScoped: false });
     });
 
-    if (
-      testInfo.project.name.endsWith("-nosupport") ||
-      testInfo.project.name === "firefox-latest"
-    ) {
+    if (!hasNativeTypes) {
       expect(messages.length).toBe(1);
 
       expect(messages[0]).toBe(
