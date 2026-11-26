@@ -5,7 +5,7 @@
 
 declare global {
   interface Document {
-    activeViewTransition: ViewTransition | null;
+    readonly activeViewTransition: ViewTransition | null;
     startViewTransition(
       callbackOptions?:
         | ViewTransitionUpdateCallback
@@ -14,7 +14,7 @@ declare global {
   }
 
   interface Element {
-    activeViewTransition: ViewTransition | null;
+    readonly activeViewTransition: ViewTransition | null;
     startViewTransition(
       callbackOptions?:
         | ViewTransitionUpdateCallback
@@ -36,7 +36,7 @@ interface ViewTransition {
   skipTransition(): void;
 }
 
-type ViewTransitionUpdateCallback = () => void | Promise<void>;
+type ViewTransitionUpdateCallback = () => any;
 
 interface StartViewTransitionOptions {
   update?: ViewTransitionUpdateCallback | null;
@@ -65,12 +65,12 @@ type RegistrationTrigger = {
   forced?: boolean;
 };
 
-export {
+export { possibleViewTransitionPhases };
+export type {
   ViewTransition,
   ViewTransitionUpdateCallback,
   StartViewTransitionOptions,
   ViewTransitionTypeSet,
   ViewTransitionPhase,
-  possibleViewTransitionPhases,
   RegistrationTrigger,
 };

@@ -3,8 +3,15 @@
     "version": "1.1.0",
     "description": "Mock support for Same-Document View Transitions",
     "type": "module",
+    "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "files": [
         "dist"
     ],
@@ -13,7 +20,7 @@
         "lint": "prettier --check '{src,tests,demo}/**/*.{ts,tsx,js,jsx}'",
         "format": "prettier --write '{src,tests,demo}/**/*.{ts,tsx,js,jsx}'",
         "prebuild": "npm run clean",
-        "build": "esbuild src/index.ts --sourcemap --bundle --outfile=dist/index.js --platform=browser --format=esm && tsc --declaration --emitDeclarationOnly --outFile dist/index.d.ts",
+        "build": "esbuild src/index.ts --sourcemap --bundle --outfile=dist/index.js --platform=browser --format=esm && tsc --declaration --emitDeclarationOnly --outDir dist",
         "start": "concurrently --kill-others 'npm run watch' 'npm run serve'",
         "watch": "esbuild src/index.ts --sourcemap --bundle --outfile=demo/view-transitions-mock.js --platform=browser --format=esm --watch",
         "serve": "esbuild --servedir=demo",

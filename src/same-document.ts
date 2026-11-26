@@ -4,14 +4,14 @@
  */
 
 import {
-  ViewTransitionUpdateCallback,
-  StartViewTransitionOptions,
+  type ViewTransitionUpdateCallback,
+  type StartViewTransitionOptions,
   possibleViewTransitionPhases,
-} from "./types";
+} from "./types.js";
 import {
   ViewTransition,
   setAllowClassCreation,
-} from "./classes/ViewTransition";
+} from "./classes/ViewTransition.js";
 
 // Document’s active view transition
 let documentActiveViewTransition: ViewTransition | null = null;

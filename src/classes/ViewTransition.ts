@@ -6,13 +6,13 @@
 import WatchablePromise from "watchable-promise";
 
 import {
-  ViewTransition as ViewTransitionInterface,
-  ViewTransitionUpdateCallback,
-  ViewTransitionPhase,
+  type ViewTransition as ViewTransitionInterface,
+  type ViewTransitionUpdateCallback,
+  type ViewTransitionPhase,
   possibleViewTransitionPhases,
-} from "../types";
-import { ViewTransitionTypeSet } from "./ViewTransitionTypeSet";
-import { skipTheViewTransition } from "../same-document";
+} from "../types.js";
+import { ViewTransitionTypeSet } from "./ViewTransitionTypeSet.js";
+import { skipTheViewTransition } from "../same-document.js";
 
 type ResolveFunction = (value: void | PromiseLike<void>) => void;
 type RejectFunction = (reason?: any) => void;
