@@ -8,8 +8,7 @@ declare global {
     readonly activeViewTransition: ViewTransition | null;
     startViewTransition(
       callbackOptions?:
-        | ViewTransitionUpdateCallback
-        | StartViewTransitionOptions,
+        ViewTransitionUpdateCallback | StartViewTransitionOptions,
     ): ViewTransition;
   }
 
@@ -17,8 +16,7 @@ declare global {
     readonly activeViewTransition: ViewTransition | null;
     startViewTransition(
       callbackOptions?:
-        | ViewTransitionUpdateCallback
-        | StartViewTransitionOptions,
+        ViewTransitionUpdateCallback | StartViewTransitionOptions,
     ): ViewTransition;
   }
 
@@ -47,10 +45,7 @@ interface ViewTransitionTypeSet extends Set<string> {}
 
 // @ref https://drafts.csswg.org/css-view-transitions-1/#viewtransition-phase
 type ViewTransitionPhase =
-  | "pending-capture"
-  | "update-callback-called"
-  | "animating"
-  | "done";
+  "pending-capture" | "update-callback-called" | "animating" | "done";
 
 const possibleViewTransitionPhases: ViewTransitionPhase[] = [
   "pending-capture",
