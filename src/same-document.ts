@@ -588,13 +588,11 @@ const handleTransitionFrame = (transition: ViewTransition) => {
 // @ref https://drafts.csswg.org/css-view-transitions-2/#call-the-update-callback
 const callTheUpdateCallback = (transition: ViewTransition) => {
   // 1. Assert: transition’s phase is "done", or before "update-callback-called".
-  if (
-    !(
-      transition.phase === "done" ||
-      possibleViewTransitionPhases.indexOf(transition.phase) <
-        possibleViewTransitionPhases.indexOf("update-callback-called")
-    )
-  ) {
+  if (!(
+    transition.phase === "done" ||
+    possibleViewTransitionPhases.indexOf(transition.phase) <
+      possibleViewTransitionPhases.indexOf("update-callback-called")
+  )) {
     throw new Error(
       `Assertion failed: transition’s phase is "done", or before "update-callback-called". The transition’s phase is "${transition.phase}"`,
     );
