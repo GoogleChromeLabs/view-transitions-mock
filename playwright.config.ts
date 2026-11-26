@@ -61,6 +61,38 @@ function getFirefoxLaunchEnv(): Record<string, string> | undefined {
 
 const firefoxLaunchEnv = getFirefoxLaunchEnv();
 
+// Older Playwright-bundled browsers (e.g. Firefox 142 from Playwright 1.56)
+// reject newer optional protocol fields sent by newer Playwright versions.
+// Wrapping them with compat-browser-proxy.js transparently strips unknown
+// schema properties on the fd 3/4 JSON-RPC pipe without touching node_modules.
+function getCompatProxyLaunchOptions(
+  executablePath: string,
+  extraEnv?: Record<string, string>,
+): { executablePath: string; env?: Record<string, string> } {
+  if (process.platform === 'win32') {
+    return {
+      executablePath,
+      ...(extraEnv && { env: extraEnv }),
+    };
+  }
+
+  const env: Record<string, string> = {};
+  for (const [key, value] of Object.entries(process.env)) {
+    if (typeof value === 'string') {
+      env[key] = value;
+    }
+  }
+  if (extraEnv) {
+    Object.assign(env, extraEnv);
+  }
+  env.PW_COMPAT_REAL_BIN = executablePath;
+
+  return {
+    executablePath: './tests/compat-browser-proxy.js',
+    env,
+  };
+}
+
 export default defineConfig({
   testDir: './tests',
   tsconfig: './tsconfig.json',
@@ -90,10 +122,10 @@ export default defineConfig({
       name: 'firefox-142-nosupport',
       use: {
         ...devices['Desktop Firefox'],
-        launchOptions: {
-          executablePath: browserPaths['firefox-142-nosupport'][process.platform],
-          ...(firefoxLaunchEnv && { env: firefoxLaunchEnv }),
-        },
+        launchOptions: getCompatProxyLaunchOptions(
+          browserPaths['firefox-142-nosupport'][process.platform],
+          firefoxLaunchEnv,
+        ),
       },
     },
     {
@@ -105,17 +137,15 @@ export default defineConfig({
         },
       },
     },
-    // // Disabled, because of this error:
-    // // “Error: browserContext.newPage: Protocol error (Page.overrideSetting): Unknown setting: FixedBackgroundsPaintRelativeToDocument”
-    // {
-    //   name: 'webkit-17.4-nosupport',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //     launchOptions: {
-    //       executablePath: browserPaths['webkit-17.4-nosupport'][process.platform],
-    //     },
-    //   },
-    // },
+    {
+      name: 'webkit-17.4-nosupport',
+      use: {
+        ...devices['Desktop Safari'],
+        launchOptions: getCompatProxyLaunchOptions(
+          browserPaths['webkit-17.4-nosupport'][process.platform],
+        ),
+      },
+    },
   ],
   webServer: {
     command: 'npx esbuild --serve=7357 --servedir=. --log-level=silent',
